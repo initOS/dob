@@ -110,10 +110,6 @@ def load_init_arguments(args):
         help="Skip the bootstrapping of the repositories",
     )
     parser.add_argument(
-        "-scripts", action="store_false", default=True,
-        help="Skip the bootstrapping of the scripts",
-    )
-    parser.add_argument(
         "-versions", action="store_false", default=True,
         help="Skip the bootstrapping of the versions.txt",
     )
@@ -573,39 +569,6 @@ class Environment:
         with open('etc/odoo.cfg', 'w+') as fp:
             cp.write(fp)
 
-    def generate_scripts(self):
-        """ Generate additional scripts """
-        info("Generating scripts")
-        os.makedirs("bin", exist_ok=True)
-
-        # Specific variables to use in the script definition
-        path = os.path.abspath(sys.argv[0])
-        odoo_path = os.path.join(os.getcwd(), self.get(SECTION, "odoo"))
-        python_path = os.path.abspath("env/bin/python3")
-        pip_path = f"{python_path} -m pip"
-        replaces = [
-            ("$bootstrap", f"{python_path} {path}"),
-            ("$cfg", os.path.abspath("etc/odoo.cfg")),
-            ("$cwd", os.getcwd()),
-            ("$modules", ",".join(sorted(self.get_modules()))),
-            ("$odoo_path", os.path.abspath(odoo_path)),
-            ("$odoo", f"{python_path} {os.path.join(odoo_path, 'odoo-bin')}"),
-            ("$pip", pip_path),
-            ("$python", python_path),
-        ]
-
-        # Generate each script
-        for p, script in self.get("scripts", default={}).items():
-            for old, new in replaces:
-                script = script.replace(old, new)
-
-            # Always write the shebang first
-            with open(p, "w+") as fp:
-                fp.write(f"#!/bin/bash\n\n{script}\n")
-
-            # Make the script executable
-            os.chmod(p, 0o754)
-
     def install_packages(self):
         """ Install all packages from the versions.txt """
         if not os.path.isfile("versions.txt"):
@@ -640,9 +603,6 @@ class Environment:
 
         if args.versions:
             self.generate_requirements()
-
-        if args.scripts:
-            self.generate_scripts()
 
     def shell(self, args):
         """ Start an Odoo shell """
