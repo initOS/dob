@@ -20,6 +20,11 @@ from git_aggregator.repo import Repo
 from git_aggregator.utils import ThreadNameKeeper
 
 try:
+    import pre_install
+except ImportError:
+    pre_install = None
+
+try:
     import pre_update
 except ImportError:
     pre_update = None
@@ -30,7 +35,6 @@ except ImportError:
     post_update = None
 
 # pylint: enable=import-error,wrong-import-order
-
 try:
     from Queue import Queue, Empty as EmptyQueue
 except ImportError:
@@ -39,8 +43,15 @@ except ImportError:
 
 SECTION = "bootstrap"
 
+# Mapping of environment variables to configurations
+ENVIRONMENT = {
+    "ODOO_VERSION": ("odoo", "version"),
+    "BOOTSTRAP_MODE": (SECTION, "mode"),
+}
+
 
 def get_config_file():
+    """ Favor a odoo.local.yaml if exists """
     for file in ["odoo.local.yaml", "odoo.project.yaml"]:
         if os.path.isfile(file):
             return file
@@ -97,10 +108,6 @@ def load_init_arguments(args):
     parser.add_argument(
         "-repos", action="store_false", default=True,
         help="Skip the bootstrapping of the repositories",
-    )
-    parser.add_argument(
-        "-pip", action="store_false", default=True,
-        help="Skip the bootstrapping of the python packages",
     )
     parser.add_argument(
         "-scripts", action="store_false", default=True,
@@ -180,18 +187,19 @@ def call(*cmd, cwd=None, pipe=True):
     return output.strip() if output else ""
 
 
-def info(msg):
+def info(msg, *args):
     """ Output a green colored info message """
-    print(f"\x1b[32m{msg}\x1b[0m")
+    print(f"\x1b[32m{msg % args}\x1b[0m")
 
 
-def warn(msg):
-    print(f"\x1b[33m{msg}\x1b[0m")
+def warn(msg, *args):
+    """ Output a yellow colored warning message """
+    print(f"\x1b[1;33m{msg % args}\x1b[0m")
 
 
-def error(msg):
+def error(msg, *args):
     """ Output a red colored error """
-    print(f"\x1b[31m{msg}\x1b[0m")
+    print(f"\x1b[31m{msg % args}\x1b[0m")
 
 
 def merge(a, b):
@@ -208,6 +216,8 @@ def merge(a, b):
         return res
     if isinstance(a, list) and isinstance(b, list):
         return a + b
+    if isinstance(a, set) and isinstance(b, set):
+        return a.union(b)
     return b
 
 
@@ -229,7 +239,8 @@ def raise_keyboard_interrupt(*a):
 
 
 class Version:
-    """ Class to read and and compare versions """
+    """ Class to read and and compare versions. Instances are getting
+    passed to the migration scripts """
 
     def __init__(self, ver):
         if isinstance(ver, Version):
@@ -263,6 +274,7 @@ class Version:
         return self.version >= Version(other).version
 
 
+# pylint: disable=too-many-public-methods
 class Environment:
     """ Bootstrap environment """
 
@@ -320,9 +332,14 @@ class Environment:
                     tmp.append(x)
             return tmp
 
-        # Use the odoo version from the environment if set
-        if os.environ.get("ODOO_VERSION"):
-            self.set("odoo", "version", value=os.environ["ODOO_VERSION"])
+        # Include environment variables first for later substitutions
+        for env, keys in ENVIRONMENT.items():
+            if os.environ.get(env):
+                self.set(*keys, value=os.environ[env])
+
+        options = self.get("odoo", "options", default={})
+        for key, value in options.items():
+            options[key] = os.environ.get(f"ODOO_{key.upper()}") or value
 
         # Run the substitution on the configuration
         self.config = sub_dict(self.config)
@@ -337,16 +354,6 @@ class Environment:
         # Generate the addon paths
         current = set(map(os.path.abspath, current))
         self.set("odoo", "options", "addons_path", value=current)
-
-        # Use environment variables
-        options = self.get("odoo", "options", default={})
-        for key, value in options.items():
-            options[key] = os.environ.get(f"ODOO_{key.upper()}") or value
-
-        self.set("odoo", "options", value=options)
-
-        if "BOOTSTRAP_MODE" in os.environ:
-            self.set(SECTION, "mode", os.environ["BOOTSTRAP_MODE"])
 
     def _read(self, filename, default=None):
         """ Read a specific file within the repository """
@@ -383,6 +390,7 @@ class Environment:
             return default
 
     def set(self, *key, value=None):
+        """ Set a specific value of the configuration """
         data = self.config
         for k in key[:-1]:
             data = data[k]
@@ -390,6 +398,7 @@ class Environment:
         data[key[-1]] = value
 
     def dump(self):
+        """ Simply output the rendered configuration file """
         print(yaml.dump(self.config))
 
     def _load_config(self, cfg):
@@ -411,7 +420,8 @@ class Environment:
         # Merge the configurations
         self.config = merge(self.config, options)
 
-    def init_odoo(self):
+    def _init_odoo(self):
+        """ Initialize Odoo to enable the module import """
         path = self.get(SECTION, "odoo")
         if not path:
             error(f"No {SECTION}:odoo defined")
@@ -422,7 +432,8 @@ class Environment:
             error("Missing odoo folder")
             return False
 
-        sys.path.append(path)
+        if path not in sys.path:
+            sys.path.append(path)
         return True
 
     @contextmanager
@@ -435,7 +446,9 @@ class Environment:
         with closing(reg.cursor()) as cr:
             uid = odoo.SUPERUSER_ID
             ctx = odoo.api.Environment(cr, uid, {})['res.users'].context_get()
+
             yield odoo.api.Environment(cr, uid, ctx)
+
             if rollback:
                 cr.rollback()
             else:
@@ -472,7 +485,8 @@ class Environment:
         """ Bootstrap the git repositories using git aggregator """
         info("Bootstrapping repositories")
 
-        # Mostly adapted from the git aggregator main module
+        # Mostly adapted from the git aggregator main module with integration
+        # into the bootstrapping structure
         jobs = max(args.jobs, 1)
         threads = []
         sem = threading.Semaphore(jobs)
@@ -493,7 +507,8 @@ class Environment:
 
             if jobs > 1:
                 t = threading.Thread(
-                    target=aggregate_repo, args=(r, args, sem, err_queue))
+                    target=aggregate_repo, args=(r, args, sem, err_queue),
+                )
                 t.daemon = True
                 t.name = tname
                 threads.append(t)
@@ -537,7 +552,7 @@ class Environment:
                     fp.write(req + "\n")
 
     def generate_config(self):
-        """ Generate the odoo configuration file """
+        """ Generate the Odoo configuration file """
         info("Generating configuration file")
         cp = ConfigParser()
 
@@ -629,13 +644,10 @@ class Environment:
         if args.scripts:
             self.generate_scripts()
 
-        if args.pip:
-            self.install_packages()
-
     def shell(self, args):
-        """ Start an odoo shell """
+        """ Start an Odoo shell """
         args, left = load_shell_arguments(args)
-        if not self.init_odoo():
+        if not self._init_odoo():
             return
 
         # pylint: disable=C0415,E0401
@@ -650,8 +662,8 @@ class Environment:
         sys.exit(shell.run(["-c", os.path.abspath("etc/odoo.cfg")]))
 
     def start(self, args):
-        """ Start odoo """
-        if not self.init_odoo():
+        """ Start Odoo """
+        if not self._init_odoo():
             return
 
         # pylint: disable=C0415,E0401
@@ -671,7 +683,7 @@ class Environment:
 
     def test(self, args):
         """ Run tests """
-        if not self.init_odoo():
+        if not self._init_odoo():
             return
 
         # pylint: disable=C0415,E0401
@@ -725,17 +737,17 @@ class Environment:
         self.update_all(db_name, blacklist)
 
     def update(self, args):
-        """ Install/update odoo modules """
+        """ Install/update Odoo modules """
         args, _ = load_update_arguments(args)
 
-        if not self.init_odoo():
+        if not self._init_odoo():
             return
 
         # pylint: disable=C0415,E0401
         import odoo
         from odoo.tools import config
 
-        # Load the odoo configuration
+        # Load the Odoo configuration
         cfg = os.path.abspath("etc/odoo.cfg")
         config.parse_config(["-c", cfg])
         odoo.cli.server.report_configuration()
@@ -749,6 +761,9 @@ class Environment:
                     info("Initializing the database")
                     odoo.modules.db.initialize(cr)
                     cr.commit()
+
+            # Execute the pre install script
+            self._run_migration(db_name, pre_install)
 
             # Install all modules
             info("Installing all modules")

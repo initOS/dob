@@ -9,6 +9,7 @@ Minimal configuration
 Minimal YAML configuration file `odoo.local.yaml`. This is optional and only necessary to overwrite predefined settings locally:
 
 ```
+# Machine specific configuration file
 bootstrap:
   extend: odoo.project.yaml
 ```
@@ -64,7 +65,7 @@ scripts -> dict
 Migration
 ---------
 
-Next to the module migrations you can create the `pre_update.py` and/or `post_update.py` scripts. Following the required interface:
+Next to the module migrations you can create the `pre_install`, `pre_update.py` and/or `post_update.py` scripts for full flexibility. These scripts need the following interface:
 
 ```
 def migrate(env, db_version):
