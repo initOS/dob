@@ -1,6 +1,7 @@
 # Do not edit. Used to keep the odoo.yaml cleaner and shorter
 odoo:
   options:
+    admin_passwd: admin
     data_dir: /srv/odoo/filestore/
     db_host: False
     db_maxconn: 64

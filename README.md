@@ -8,8 +8,9 @@ Minimal configuration
 Minimal `.env` configuration file. See below for more informations:
 
 ```
-DB_PASSWORD=...
 BOOTSTRAP_MODE=dev
+DB_PASSWORD=...
+ODOO_ADMIN_PASSWD=...
 ```
 
 Usage

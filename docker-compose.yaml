@@ -8,6 +8,8 @@ services:
       dockerfile: Dockerfile
     depends_on:
       - db
+    env_file:
+      - .env
     environment:
       UID: "${UID:-1000}"
       GID: "${GID:-1000}"
@@ -17,7 +19,6 @@ services:
       ODOO_DB_PASSWORD: &dbpass $DB_PASSWORD
       ODOO_DB_PORT: &dbport ${DB_PORT:-5432}
       ODOO_DB_USER: &dbuser ${DB_USER:-odoo}
-      ODOO_VERSION: ${ODOO_VERSION:-}
       PGDATABASE: *dbname
       PGHOST: *dbhost
       PGPASSWORD: *dbpass
