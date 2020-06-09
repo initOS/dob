@@ -1,0 +1,4 @@
+#!/bin/bash
+
+cd /srv/odoo/odoo
+exec python3 bootstrap.py "$@"

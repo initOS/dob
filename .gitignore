@@ -1,0 +1,17 @@
+*.pyc
+.coverage
+.env
+.idea
+.pytest_cache
+__pycache__
+db/
+filestore/
+odoo/bin
+odoo/cover
+odoo/env
+odoo/etc
+odoo/htmlcov
+odoo/odoo.local.yaml
+odoo/parts
+odoo/upgrade.log
+ssh/

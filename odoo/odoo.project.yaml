@@ -1,0 +1,11 @@
+# Project specific configuration file
+bootstrap:
+  extend:
+    - odoo.default.yaml
+    - odoo.yaml
+  # Version used for the update scripts
+  version: "0.1"
+
+odoo:
+  addons_path:
+    - src/addons

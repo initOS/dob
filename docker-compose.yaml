@@ -1,0 +1,56 @@
+version: '3'
+
+services:
+  # Odoo
+  odoo:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    depends_on:
+      - db
+    environment:
+      UID: "${UID:-1000}"
+      GID: "${GID:-1000}"
+      UMASK: "${UMASK:-022}"
+      ODOO_DB_HOST: &dbhost ${DB_HOST:-db}
+      ODOO_DB_NAME: &dbname ${DB_NAME:-odoo}
+      ODOO_DB_PASSWORD: &dbpass $DB_PASSWORD
+      ODOO_DB_PORT: &dbport ${DB_PORT:-5432}
+      ODOO_DB_USER: &dbuser ${DB_USER:-odoo}
+      ODOO_VERSION: ${ODOO_VERSION:-}
+      PGDATABASE: *dbname
+      PGHOST: *dbhost
+      PGPASSWORD: *dbpass
+      PGPORT: *dbport
+      PGUSER: *dbuser
+    networks:
+      default:
+      public:
+    ports:
+      - ${HTTP_PORT:-127.0.0.1:8069}:8069
+      - ${HTTP_LONGPOLLING_PORT:-127.0.0.1:8072}:8072
+    user: odoo
+    volumes:
+      - ./filestore:/srv/odoo/filestore:rw,z
+      - ./odoo:/srv/odoo/odoo
+      - ./ssh:/srv/odoo/.ssh
+
+  # Database
+  db:
+    image: postgres:${DB_VERSION:-latest}-alpine
+    environment:
+      POSTGRES_DB: "${DB_NAME:-odoo}"
+      POSTGRES_USER: "${DB_USER:-odoo}"
+      POSTGRES_PASSWORD: $DB_PASSWORD
+      CONF_EXTRA: work_mem = 32MB
+    shm_size: 512mb
+    volumes:
+      - db:/var/lib/postgresql/data:z
+
+networks:
+  default:
+    internal: True
+  public:
+
+volumes:
+  db:
