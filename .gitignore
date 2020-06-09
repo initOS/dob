@@ -14,4 +14,4 @@ odoo/htmlcov
 odoo/odoo.local.yaml
 odoo/parts
 odoo/upgrade.log
-ssh/
+ssh

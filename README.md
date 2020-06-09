@@ -18,7 +18,10 @@ Usage
 Use `-f docker-compose.yaml -f mailhog.yaml` after `docker-compose` if a mailsink is needed.
 
 ```
-$ ln -P ~/.ssh ssh
+# To be able to use the git keys of the current user
+$ mkdir ssh
+$ ln -P ~/.ssh/* ssh/
+# Build, initialization and start up
 $ docker-compose build
 $ docker-compose run --rm odoo odoo init
 $ docker-compose run --rm odoo odoo update
