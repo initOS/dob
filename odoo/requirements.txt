@@ -44,7 +44,7 @@ requests
 suds-jurko
 vatnumber
 vobject
-Werkzeug==0.14.1
+Werkzeug==0.16.1
 xlrd
 XlsxWriter
 xlwt
