@@ -56,10 +56,6 @@ odoo:version -> str
 repos -> dict
   - Configuration of the repositories to load
   - Check git-aggregator for more
-
-scripts -> dict
-  - Definition of default bash scripts
-  - Use pre-defined variables starting with $
 ```
 
 Migration
