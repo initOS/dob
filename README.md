@@ -21,8 +21,8 @@ Use `-f docker-compose.yaml -f mailhog.yaml` after `docker-compose` if a mailsin
 $ ln -P ~/.ssh ssh
 $ docker-compose build
 $ docker-compose run --rm odoo odoo init
+$ docker-compose run --rm odoo odoo update
 $ docker-compose up
-
 ```
 
 Docker
