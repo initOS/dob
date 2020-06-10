@@ -168,6 +168,10 @@ def load_update_arguments(args):
         "--all", action="store_true", default=False,
         help="Update all modules instead of only changed ones",
     )
+    parser.add_argument(
+        "--passwords", action="store_true", default=False,
+        help="Forcefully overwrite passwords",
+    )
     return parser.parse_known_args(args)
 
 
@@ -713,6 +717,7 @@ class Environment:
         odoo.cli.server.report_configuration()
 
         db_name = config["db_name"]
+        initialized = args.passwords
         with odoo.api.Environment.manage():
             # Ensure that the database is initialized
             db = odoo.sql_db.db_connect(db_name)
@@ -721,6 +726,7 @@ class Environment:
                     info("Initializing the database")
                     odoo.modules.db.initialize(cr)
                     cr.commit()
+                    initialized = True
 
             # Execute the pre install script
             self._run_migration(db_name, pre_install)
@@ -745,8 +751,18 @@ class Environment:
             # Execute the post update script
             self._run_migration(db_name, post_update)
 
-            # Write the version into the database
+            # Finish everything
             with self.env(db_name) as env:
+                # Set the user passwords if previously initialized
+                users = self.get("odoo", "users", default={})
+                if initialized and users:
+                    info("Setting user passwords")
+                    model = env["res.users"]
+                    for user, password in users.items():
+                        domain = [("login", "=", user)]
+                        model.search(domain).write({"password": password})
+
+                # Write the version into the database
                 info("Setting database version")
                 version = self.get(SECTION, "version", default="0.0")
                 env["ir.config_parameter"].set_param("db_version", version)

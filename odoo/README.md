@@ -49,6 +49,9 @@ odoo:addons_path -> list
 odoo:options -> dict
   - Odoo configuration options which are getting compiled to etc/odoo.cfg
   - Can replace the configuration key with the ODOO_key (upper case) environment variable
+odoo:users -> dict
+  - Dictionary of user:password mappings
+  - Sets the password of the specific user on initialization of the database
 odoo:version -> str
   - Odoo version to use
   - Uses environment ODOO_VERSION if set
