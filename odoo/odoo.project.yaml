@@ -6,6 +6,36 @@ bootstrap:
   # Version used for the update scripts
   version: "0.1"
 
+# Odoo configuration
 odoo:
   addons_path:
     - src/addons
+
+  version: "13.0"
+
+# List of modules to install/update
+modules:
+  - base_technical_features
+  - disable_odoo_online
+  - module_auto_update
+  - remove_odoo_enterprise
+  # Only load the ribbon module when mode dev/staging is defined
+  - web_environment_ribbon: [dev, staging]
+
+# Definition of the repositories to load
+repos:
+  parts/OCA/web:
+    remotes:
+      origin: ${bootstrap:github_url}OCA/web.git
+
+  parts/OCA/server-ux:
+    remotes:
+      origin: ${bootstrap:github_url}OCA/server-ux.git
+
+  parts/OCA/server-brand:
+    remotes:
+      origin: ${bootstrap:github_url}OCA/server-brand.git
+
+  parts/OCA/server-tools:
+    remotes:
+      origin: ${bootstrap:github_url}OCA/server-tools.git
