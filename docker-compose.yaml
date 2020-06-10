@@ -6,6 +6,9 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
+      args:
+        UID: "${UID:-1000}"
+        GID: "${UID:-1000}"
     depends_on:
       - db
     env_file:
@@ -13,7 +16,7 @@ services:
     environment:
       UID: "${UID:-1000}"
       GID: "${GID:-1000}"
-      UMASK: "${UMASK:-022}"
+      UMASK: "${UMASK:-002}"
       ODOO_DB_HOST: &dbhost ${DB_HOST:-db}
       ODOO_DB_NAME: &dbname ${DB_NAME:-odoo}
       ODOO_DB_PASSWORD: &dbpass $DB_PASSWORD
@@ -43,7 +46,7 @@ services:
 
   # Database
   db:
-    image: postgres:${DB_VERSION:-latest}-alpine
+    image: postgres:${DB_VERSION:-latest}
     environment:
       POSTGRES_DB: "${DB_NAME:-odoo}"
       POSTGRES_USER: "${DB_USER:-odoo}"

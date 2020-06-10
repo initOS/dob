@@ -1,4 +1,5 @@
-# Required for bootstrapping
+# Do not edit for odoo dependencies. Use versions.txt instead
+# Required for bootstrapping.
 coverage
 flake8
 git-aggregator
@@ -7,44 +8,3 @@ pylint_odoo
 pytest
 pytest-cov
 PyYAML
-
-# Required for odoo
-Babel
-chardet
-decorator
-docutils
-feedparser
-gevent
-greenlet
-html2text
-Jinja2
-libsass
-lxml
-Mako
-MarkupSafe
-mock
-num2words
-ofxparse
-passlib
-Pillow
-polib
-psutil
-psycopg2
-pydot
-pyldap
-pyparsing
-PyPDF2
-pyserial
-python-dateutil
-pytz
-pyusb
-qrcode
-reportlab
-requests
-suds-jurko
-vatnumber
-vobject
-Werkzeug==0.16.1
-xlrd
-XlsxWriter
-xlwt

@@ -18,16 +18,15 @@ RUN apt-get update && \
 ARG UID=1000
 ARG GID=1000
 
-ADD odoo/requirements.txt /srv/odoo/requirements.txt
-RUN python3 -m pip install --no-cache-dir -r /srv/odoo/requirements.txt
-
 RUN groupadd -g $GID odoo -o && \
     useradd -l -md /srv/odoo -s /bin/false -u $UID -g $GID odoo && \
-    mkdir -p /srv/odoo/odoo /srv/odoo/filestore/filestore && \
-    chown -R odoo:odoo /srv/odoo && \
+    chown -R odoo:odoo /srv/odoo &&\
     sync
 
-ENV LC_ALL C.UTF-8
+ADD odoo/requirements.txt /srv/odoo/requirements.txt
+ADD odoo/versions.txt /srv/odoo/versions.txt
+RUN python3 -m pip install --no-cache-dir -r /srv/odoo/requirements.txt -r /srv/odoo/versions.txt
+
 
 COPY bin/* /usr/local/bin/
 
