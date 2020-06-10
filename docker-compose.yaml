@@ -24,6 +24,11 @@ services:
       PGPASSWORD: *dbpass
       PGPORT: *dbport
       PGUSER: *dbuser
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "${LOG_SIZE:-1g}"
+        max-file: "${LOG_COUNT:-5}"
     networks:
       default:
       public:
