@@ -14,6 +14,16 @@ bootstrap:
   extend: odoo.project.yaml
 ```
 
+Files
+-----
+* `apt.txt` .. Debian package dependencies
+* `odoo.default.yaml` .. Default settings for the `odoo.cfg`
+* `odoo.local.yaml` .. Machine specific configuration file
+* `odoo.project.yaml` .. Project specific configuration file
+* `odoo.yaml` .. General configuration file
+* `requirements.txt` .. Requirements for the bootstrapping. Do not use for odoo dependencies.
+* `versions.txt` .. Python dependencies for odoo. Used for freezing.
+
 Configuration
 -------------
 
