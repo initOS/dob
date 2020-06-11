@@ -557,17 +557,22 @@ class Environment:
         cp = ConfigParser()
 
         # Generate the configuration with the sections
-        for sec, section in sorted(self.get("odoo", default={}).items()):
-            if isinstance(section, dict):
+        options = self.get("odoo", "options", default={})
+        for key, value in sorted(options.items()):
+            if "." in key:
+                sec, key = key.split(".", 1)
+            else:
+                sec = "options"
+
+            if not cp.has_section(sec):
                 cp.add_section(sec)
 
-                for key, value in sorted(section.items()):
-                    if isinstance(value, (set, list)):
-                        cp.set(sec, key, ",".join(map(str, value)))
-                    elif value is None:
-                        cp.set(sec, key, "")
-                    else:
-                        cp.set(sec, key, str(value))
+            if isinstance(value, (set, list)):
+                cp.set(sec, key, ",".join(map(str, value)))
+            elif value is None:
+                cp.set(sec, key, "")
+            else:
+                cp.set(sec, key, str(value))
 
         # Write the configuration
         with open('etc/odoo.cfg', 'w+') as fp:
