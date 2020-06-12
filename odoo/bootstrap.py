@@ -434,7 +434,7 @@ class Environment:
 
         if path not in sys.path:
             sys.path.append(path)
-        return True
+        return path
 
     @contextmanager
     def env(self, db_name, rollback=False):
@@ -631,14 +631,13 @@ class Environment:
         sys.exit(shell.run(["-c", os.path.abspath("etc/odoo.cfg")]))
 
     def start(self, args):
-        """ Start Odoo """
-        if not self._init_odoo():
+        """ Start Odoo without wrapper """
+        path = self._init_odoo()
+        if not path:
             return
 
-        # pylint: disable=C0415,E0401
-        from odoo.cli.server import Server
-        server = Server()
-        sys.exit(server.run(["-c", os.path.abspath("etc/odoo.cfg")] + args))
+        cmd = sys.executable, "odoo-bin", "-c", os.path.abspath("etc/odoo.cfg")
+        sys.exit(call(*cmd, *args, cwd=path))
 
     def ci(self, ci, args):
         """ Run CI tests """
