@@ -20,8 +20,7 @@ Use `-f docker-compose.yaml -f mailhog.yaml` after `docker-compose` if a mailsin
 
 ```
 # To be able to use the git keys of the current user
-$ mkdir ssh
-$ ln -P ~/.ssh/* ssh/
+$ ./setup.sh
 # Build, initialization and start up
 $ docker-compose build
 $ docker-compose run --rm odoo odoo init
@@ -108,11 +107,12 @@ Available commands
 
 Environment variables of `.env`
 -------------------------------
-  * PGPASSWORD .. Required. Postgres password of the database user.
-  * DB_VERSION .. Postgres version to use. If not set `latest`
-  * ODOO_VERSION .. Odoo version to use with the format `x.0`
-  * ODOO_* .. Odoo configuration variables. See `odoo.default.yaml`
-  * Ports .. Ports of the hosts. Recommended syntax <ip>:<port>
-    - HTTP_PORT .. Regular HTTP port. Default is `127.0.0.1:8069`.
-    - HTTP_LONGPOLLING_PORT .. Longpolling port. Default is `127.0.0.1:8072`.
-    - MAILHOG_PORT .. HTTP port of the mailsink. Default is `127.0.0.1:8025`.
+ * BOOTSTRAP_MODE .. Environment mode
+ * PGPASSWORD .. Required. Postgres password of the database user.
+ * DB_VERSION .. Postgres version to use. If not set `latest`
+ * ODOO_VERSION .. Odoo version to use with the format `x.0`
+ * ODOO_* .. Odoo configuration variables. See `odoo.default.yaml`
+ * Ports .. Ports of the hosts. Recommended syntax <ip>:<port>
+  - HTTP_PORT .. Regular HTTP port. Default is `127.0.0.1:8069`.
+  - HTTP_LONGPOLLING_PORT .. Longpolling port. Default is `127.0.0.1:8072`.
+  - MAILHOG_PORT .. HTTP port of the mailsink. Default is `127.0.0.1:8025`.
