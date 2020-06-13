@@ -48,9 +48,9 @@ services:
   db:
     image: postgres:${DB_VERSION:-latest}
     environment:
-      POSTGRES_DB: "${DB_NAME:-odoo}"
-      POSTGRES_USER: "${DB_USER:-odoo}"
-      POSTGRES_PASSWORD: $DB_PASSWORD
+      POSTGRES_DB: *dbname
+      POSTGRES_USER: *dbuser
+      POSTGRES_PASSWORD: *dbpass
       CONF_EXTRA: work_mem = 32MB
     shm_size: 512mb
     volumes:
