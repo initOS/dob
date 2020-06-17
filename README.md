@@ -91,11 +91,11 @@ Available commands
   - Start pylint tests passing the given parameter
   - Runs only on files specified `odoo:addons_path`
 
-* `odoo update [options]`
+* `odoo update [options] [modules]`
   - Initialize the database
   - Install all not installed modules
   - Run pre_migrate script
-  - Updates all/changed modules
+  - Updates all/changed/listed modules
   - Run post_migrate script
   - Update database version
 

@@ -156,9 +156,18 @@ def load_test_arguments(args):
 
 
 def load_update_arguments(args):
+    def no_flags(x):
+        if x.startswith("-"):
+            raise argparse.ArgumentTypeError("Invalid argument")
+        return x
+
     parser = ArgumentParser(
-        usage="%(prog)s update [options]",
+        usage="%(prog)s update [options] [module [module ...]]",
         formatter_class=argparse.RawTextHelpFormatter,
+    )
+    parser.add_argument(
+        "module", nargs=argparse.REMAINDER, type=no_flags, default=[],
+        help="Module to update",
     )
     parser.add_argument(
         "-c", dest="cfg", default=get_config_file(),
@@ -194,7 +203,7 @@ def info(msg, *args):
 
 def warn(msg, *args):
     """ Output a yellow colored warning message """
-    print(f"\x1b[1;33m{msg % args}\x1b[0m")
+    print(f"\x1b[33m{msg % args}\x1b[0m")
 
 
 def error(msg, *args):
@@ -749,7 +758,8 @@ class Environment:
                 config["init"] = dict.fromkeys(uninstalled, 1)
                 config["update"] = {}
                 without_demo = self.get(
-                    "odoo", "options", "without_demo", default=True)
+                    "odoo", "options", "without_demo", default=True,
+                )
                 odoo.modules.registry.Registry.new(
                     db_name, update_module=True, force_demo=not without_demo,
                 )
@@ -758,7 +768,9 @@ class Environment:
             self._run_migration(db_name, pre_update)
 
             # Update all modules which aren't installed before
-            if args.all:
+            if args.modules:
+                self.update_all(db_name, args.modules)
+            elif args.all:
                 self.update_all(db_name, uninstalled)
             else:
                 self.update_changed(db_name, uninstalled)
