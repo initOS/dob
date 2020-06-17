@@ -162,11 +162,11 @@ def load_update_arguments(args):
         return x
 
     parser = ArgumentParser(
-        usage="%(prog)s update [options] [module [module ...]]",
+        usage="%(prog)s update [options] [modules ...]",
         formatter_class=argparse.RawTextHelpFormatter,
     )
     parser.add_argument(
-        "module", nargs=argparse.REMAINDER, type=no_flags, default=[],
+        "modules", nargs=argparse.REMAINDER, type=no_flags, default=[],
         help="Module to update",
     )
     parser.add_argument(
@@ -397,6 +397,10 @@ class Environment:
             return data
         except KeyError:
             return default
+
+    def opt(self, *key, default=None):
+        """ Short cut to directly access odoo options """
+        return self.get("odoo", "options", *key, default=default)
 
     def set(self, *key, value=None):
         """ Set a specific value of the configuration """
@@ -689,6 +693,27 @@ class Environment:
         call(sys.executable, "-m", "coverage", "html")
         sys.exit()
 
+    def install_all(self, db_name, modules):
+        """ Install all modules """
+        # pylint: disable=C0415,E0401
+        import odoo
+        from odoo.tools import config
+
+        config["init"] = dict.fromkeys(modules, 1)
+        config["update"] = {}
+        without_demo = self.get(
+            "odoo", "options", "without_demo", default=True,
+        )
+        languages = self.get("odoo", "options", "language")
+        if languages and isinstance(languages, list):
+            config["load_language"] = ",".join(languages)
+        elif languages:
+            config["load_language"] = languages
+
+        odoo.modules.registry.Registry.new(
+            db_name, update_module=True, force_demo=not without_demo,
+        )
+
     def update_all(self, db_name, blacklist=None):
         """ Update all modules """
         # pylint: disable=C0415,E0401
@@ -755,14 +780,7 @@ class Environment:
             # Install all modules
             info("Installing all modules")
             if uninstalled:
-                config["init"] = dict.fromkeys(uninstalled, 1)
-                config["update"] = {}
-                without_demo = self.get(
-                    "odoo", "options", "without_demo", default=True,
-                )
-                odoo.modules.registry.Registry.new(
-                    db_name, update_module=True, force_demo=not without_demo,
-                )
+                self.install_all(db_name, uninstalled)
 
             # Execute the pre update script
             self._run_migration(db_name, pre_update)
