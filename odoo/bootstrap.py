@@ -708,6 +708,8 @@ class Environment:
         """ Install/update Odoo modules """
         args, _ = load_update_arguments(args)
 
+        self.generate_config()
+
         if not self._init_odoo():
             return
 
@@ -721,10 +723,10 @@ class Environment:
         odoo.cli.server.report_configuration()
 
         db_name = config["db_name"]
-        initialized = args.passwords
         with odoo.api.Environment.manage():
             # Ensure that the database is initialized
             db = odoo.sql_db.db_connect(db_name)
+            initialized = False
             with closing(db.cursor()) as cr:
                 if not odoo.modules.db.is_initialized(cr):
                     info("Initializing the database")
@@ -735,13 +737,22 @@ class Environment:
             # Execute the pre install script
             self._run_migration(db_name, pre_install)
 
+            # Get the modules to install
+            if initialized:
+                uninstalled = self.get_modules()
+            else:
+                uninstalled = self.get_uninstalled_modules(db_name)
+
             # Install all modules
             info("Installing all modules")
-            uninstalled = self.get_uninstalled_modules(db_name)
             if uninstalled:
                 config["init"] = dict.fromkeys(uninstalled, 1)
                 config["update"] = {}
-                odoo.modules.registry.Registry.new(db_name, update_module=True)
+                without_demo = self.get(
+                    "odoo", "options", "without_demo", default=True)
+                odoo.modules.registry.Registry.new(
+                    db_name, update_module=True, force_demo=not without_demo,
+                )
 
             # Execute the pre update script
             self._run_migration(db_name, pre_update)
@@ -759,7 +770,7 @@ class Environment:
             with self.env(db_name) as env:
                 # Set the user passwords if previously initialized
                 users = self.get("odoo", "users", default={})
-                if initialized and users:
+                if (initialized or args.passwords) and users:
                     info("Setting user passwords")
                     model = env["res.users"]
                     for user, password in users.items():
