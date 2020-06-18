@@ -708,10 +708,8 @@ class Environment:
 
         config["init"] = dict.fromkeys(modules, 1)
         config["update"] = {}
-        without_demo = self.get(
-            "odoo", "options", "without_demo", default=True,
-        )
-        languages = self.get("odoo", "options", "language")
+        without_demo = self.opt("without_demo", default=True)
+        languages = self.get("load_language")
         if languages and isinstance(languages, list):
             config["load_language"] = ",".join(languages)
         elif languages:
