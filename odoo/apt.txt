@@ -16,6 +16,7 @@ locales-all
 nano
 node-clean-css
 node-less
+npm
 pg-activity
 postgresql-client
 python3

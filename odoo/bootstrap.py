@@ -66,11 +66,12 @@ def load_arguments(args):
     base.add_argument(
         "command", metavar="command", nargs="?",
         help="Command to use. Possible choices: "
-             "c(onfig), i(nit), r(un), s(hell), t(est), u(pdate), f(reeze)"
-             "flake8, pylint",
+             "c(onfig), i(nit), r(un), s(hell), t(est), u(pdate), f(reeze), "
+             "flake8, pylint, eslint",
         choices=(
             "c", "config", "i", "init", "s", "shell", "t", "test",
             "u", "update", "r", "run", "f", "freeze", "flake8", "pylint",
+            "eslint",
         ),
     )
     base.add_argument(
@@ -660,7 +661,13 @@ class Environment:
         for path in self.get("odoo", "addons_path", default=[]):
             args.append(path)
 
-        sys.exit(call(sys.executable, "-m", ci, *args))
+        cmd = [sys.executable, "-", ci]
+        if ci == "pylint":
+            args.append("--rcfile=.pylintrc")
+        elif ci == "eslint":
+            cmd = ["eslint"]
+
+        sys.exit(call(*cmd, *args))
 
     def test(self, args):
         """ Run tests """
@@ -834,7 +841,7 @@ if __name__ == "__main__":
         env.shell(left)
     elif args.command in ("t", "test"):
         env.test(left)
-    elif args.command in ("flake8", "pylint"):
+    elif args.command in ("flake8", "pylint", "eslint"):
         env.ci(args.command, left)
     elif args.command in ("u", "update"):
         env.update(left)

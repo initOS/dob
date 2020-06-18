@@ -38,7 +38,7 @@ odoo:
     overwrite_existing_translations: False
     pidfile: False
     proxy_mode: True
-    server_wide_modules: 'base,web'
+    server_wide_modules: base,web
     smtp_password: False
     smtp_port: 25
     smtp_server: localhost
