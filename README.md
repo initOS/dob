@@ -37,8 +37,11 @@ Docker
 * `docker-compose up [options] [container]`
   - Create and start the containers
 
+* `docker-compose stop [options] [container]`
+  - Stop running containers without removing them
+
 * `docker-compose down`
-  - Put down running containers
+  - Stop containers and remove created containers, networks, volumes, and images
 
 * `docker-compose kill`
   - Kill containers
