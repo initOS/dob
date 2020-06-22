@@ -64,13 +64,12 @@ Available commands
   - See --help for more information
 
 * `odoo init [options]`
-  - Initialization of the environment including
-    * Generation of configuration file `etc/odoo.cfg`
-    * Checking out of the repositories
-    * Initial generation of versions.txt file
-      + Can aggregate the requirements.txt file of all repositories
-      + Experimental because of specifier
-    * Creation of the scripts
+  - Generation of configuration file `etc/odoo.cfg`
+  - Checking out of the repositories
+  - Initial generation of versions.txt file
+    + Can aggregate the requirements.txt file of all repositories
+    + Experimental because of specifier
+  - Creation of the scripts
 
 * `odoo freeze`
   - Freeze the python packages into the versions.txt
@@ -95,6 +94,7 @@ Available commands
   - Runs only on files specified `odoo:addons_path`
 
 * `odoo update [options] [modules]`
+  - Generation of configuration file `etc/odoo.cfg`
   - Initialize the database
   - Install all not installed modules
   - Run pre_migrate script
