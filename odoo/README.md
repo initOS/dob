@@ -74,7 +74,7 @@ repos -> dict
 Migration
 ---------
 
-Next to the module migrations you can create the `pre_install`, `pre_update.py` and/or `post_update.py` scripts for full flexibility. These scripts need the following interface:
+Next to the module migrations you can create the `pre_install.py`, `pre_update.py` and/or `post_update.py` scripts for full flexibility. These scripts need the following interface:
 
 ```
 def migrate(env, db_version):

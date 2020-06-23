@@ -99,10 +99,11 @@ Available commands
 * `odoo update [options] [modules]`
   - Generation of configuration file `etc/odoo.cfg`
   - Initialize the database
+  - Run `pre_install.py` script
   - Install all not installed modules
-  - Run pre_migrate script
+  - Run `pre_update.py` script
   - Updates all/changed/listed modules
-  - Run post_migrate script
+  - Run `post_update.py` script
   - Update database version
 
 * `odoo run [options]`
