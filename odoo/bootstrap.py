@@ -661,7 +661,7 @@ class Environment:
         for path in self.get("odoo", "addons_path", default=[]):
             args.append(path)
 
-        cmd = [sys.executable, "-", ci]
+        cmd = [sys.executable, "-m", ci]
         if ci == "pylint":
             args.append("--rcfile=.pylintrc")
         elif ci == "eslint":

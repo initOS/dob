@@ -69,7 +69,6 @@ Available commands
   - Initial generation of versions.txt file
     + Can aggregate the requirements.txt file of all repositories
     + Experimental because of specifier
-  - Creation of the scripts
 
 * `odoo freeze`
   - Freeze the python packages into the versions.txt
@@ -89,6 +88,10 @@ Available commands
   - Start flake8 tests passing the given parameter
   - Runs only on files specified `odoo:addons_path`
 
+* `odoo eslint [options]`
+  - Start eslint tests passing the given parameter
+  - Runs only on files specified in `odoo:addons_path`
+
 * `odoo pylint [options]`
   - Start pylint tests passing the given parameter
   - Runs only on files specified `odoo:addons_path`
@@ -104,6 +107,7 @@ Available commands
 
 * `odoo run [options]`
   - Start odoo and pass the options directly to Odoo
+  - Use `docker-compose up` instead to expose the ports
 
 * `psql`, `pg_dump`, `pg_restore`, `pg_activity`, `createdb`, `dropdb`
   - Postgres utitilies
