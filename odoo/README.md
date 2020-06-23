@@ -6,7 +6,8 @@ Yaml based Odoo deployment tool.
 Minimal configuration
 ---------------------
 
-Minimal YAML configuration file `odoo.local.yaml`. This is optional and only necessary to overwrite predefined settings locally:
+Minimal YAML configuration file `odoo.local.yaml`. This is optional and only
+necessary to overwrite predefined settings locally:
 
 ```
 # Machine specific configuration file
@@ -21,13 +22,16 @@ Files
 * `odoo.local.yaml` .. Machine specific configuration file
 * `odoo.project.yaml` .. Project specific configuration file
 * `odoo.yaml` .. General configuration file
-* `requirements.txt` .. Requirements for the bootstrapping. Do not use for odoo dependencies.
+* `requirements.txt` .. Requirements for the bootstrapping. Do not use for odoo
+  dependencies.
 * `versions.txt` .. Python dependencies for odoo. Used for freezing.
 
 Configuration
 -------------
 
-The main configuration is stored in .yaml files extended and merged together. It's possible to access other parts of the configuration using the `${...}` syntax (e.g. `${odoo:version}`). Below are the important sections described.
+The main configuration is stored in .yaml files extended and merged together.
+It's possible to access other parts of the configuration using the `${...}`
+syntax (e.g. `${odoo:version}`). Below are the important sections described.
 
 ```
 bootstrap -> dict
@@ -58,7 +62,8 @@ odoo:addons_path -> list
   - List of additional directories with odoo modules
 odoo:options -> dict
   - Odoo configuration options which are getting compiled to etc/odoo.cfg
-  - Can replace the configuration key with the ODOO_key (upper case) environment variable
+  - Can replace the configuration key with the ODOO_key (upper case) environment
+    variable
 odoo:users -> dict
   - Dictionary of user:password mappings
   - Sets the password of the specific user on initialization of the database
@@ -74,7 +79,9 @@ repos -> dict
 Migration
 ---------
 
-Next to the module migrations you can create the `pre_install.py`, `pre_update.py` and/or `post_update.py` scripts for full flexibility. These scripts need the following interface:
+Next to the module migrations you can create the `pre_install.py`,
+`pre_update.py` and/or `post_update.py` scripts for full flexibility. These
+scripts need the following interface:
 
 ```
 def migrate(env, db_version):
