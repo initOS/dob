@@ -1,13 +1,16 @@
 #!/usr/bin/env python3
 import argparse
 import os
+import random
 import re
+import string
 import sys
 import threading
 import traceback
 from argparse import ArgumentParser
 from configparser import ConfigParser
 from contextlib import closing, contextmanager
+from datetime import date, datetime, timedelta
 from multiprocessing import cpu_count
 from subprocess import PIPE, Popen
 
@@ -41,6 +44,7 @@ except ImportError:
     from queue import Queue, Empty as EmptyQueue
 
 
+ALNUM = string.ascii_letters + string.digits
 SECTION = "bootstrap"
 
 # Mapping of environment variables to configurations
@@ -210,6 +214,72 @@ def warn(msg, *args):
 def error(msg, *args):
     """ Output a red colored error """
     print(f"\x1b[31m{msg % args}\x1b[0m")
+
+
+def defuse_boolean(rec, **kw):
+    field = kw.get("field")
+    # Use the value of a different field
+    if field:
+        return bool(rec[field])
+    return random.choice((False, True))
+
+
+def defuse_int(rec, **kw):
+    lower = kw.get("lower", None)
+    upper = kw.get("upper", None)
+    field = kw.get("field", None)
+    # Use the value of a different field
+    if field:
+        return rec[field]
+    # Randomize the value
+    if isinstance(lower, int) and isinstance(upper, int):
+        return random.randint(lower, upper)
+    raise TypeError("Lower and upper bounds must be integer")
+
+
+def defuse_float(rec, **kw):
+    lower = kw.get("lower", 0.0)
+    upper = kw.get("upper", 1.0)
+    field = kw.get("field", None)
+    # Use the value of a different field
+    if field:
+        return rec[field]
+    # Randomize the value
+    return random.random() * (upper - lower) + lower
+
+
+def defuse_text(rec, **kw):
+    prefix = kw.get("prefix", "")
+    suffix = kw.get("suffix", "")
+    length = kw.get("length", None)
+    field = kw.get("field", None)
+    # Use the value of a different field
+    if isinstance(field, str):
+        return str(rec[field])
+    # Randomize the value
+    if isinstance(length, int) and length > 0:
+        return prefix + "".join(random.choices(ALNUM, k=length)) + suffix
+    raise TypeError("Length must be integer")
+
+
+def defuse_datetime(rec, **kw):
+    lower = kw.get("lower", datetime(1970, 1, 1))
+    upper = kw.get("upper", datetime.now())
+    field = kw.get("field", None)
+    if field:
+        return rec[field]
+    diff = upper - lower
+    return lower + timedelta(seconds=random.randint(0, diff.seconds))
+
+
+def defuse_date(rec, **kw):
+    lower = kw.get("lower", date(1970, 1, 1))
+    upper = kw.get("upper", date.today())
+    field = kw.get("field", None)
+    if field:
+        return rec[field]
+    diff = upper - lower
+    return lower + timedelta(days=random.randint(0, diff.days))
 
 
 def merge(a, b):
@@ -601,6 +671,98 @@ class Environment:
         info("Installing packages")
         cmd = ("-m", "pip", "install", "-r", "versions.txt")
         call(sys.executable, *cmd, pipe=False)
+
+    def _defuse_delete(self, model, domain):
+        """ Runs the delete defusing """
+        model.search(domain).unlink()
+
+    def _defuse_update(self, model, values, domain):
+        """ Runs the update defusing """
+        if not values:
+            return
+
+        records = model.search(domain)
+
+        mapping = {
+            "boolean": defuse_boolean,
+            "char": defuse_text,
+            "date": defuse_date,
+            "datetime": defuse_datetime,
+            "float": defuse_float,
+            "html": defuse_text,
+            "integer": defuse_int,
+            "monetary": defuse_float,
+            "text": defuse_text,
+        }
+
+        # Split the values in constant and dynamic
+        const, dynamic = {}, {}
+        for key, value in values.items():
+            if isinstance(value, dict):
+                ftype = model._fields[key].type
+                if ftype not in mapping:
+                    error(f"Field defusing not supported: {key}")
+                    continue
+
+                dynamic[key] = {**value, 'func': mapping[ftype]}
+            else:
+                const[key] = value
+
+        # Handle the constant values
+        if const:
+            records.write({})
+
+        # Handle the dynamic values
+        if dynamic:
+            for rec in records:
+                vals = {}
+                for key, field in dynamic.items():
+                    vals[key] = mapping.get(field["type"])(rec, **field)
+                rec.write(vals)
+
+    def defuse(self):
+        """ Defuses the database """
+        if not self._init_odoo():
+            return
+
+        defuses = self.get("odoo", "defuse", default={})
+        if not defuses:
+            return
+
+        # pylint: disable=C0415,E0401
+        import odoo
+        from odoo.tools import config
+
+        # Load the Odoo configuration
+        cfg = os.path.abspath("etc/odoo.cfg")
+        config.parse_config(["-c", cfg])
+        odoo.cli.server.report_configuration()
+
+        db_name = config["db_name"]
+
+        info("Running defuse")
+        with self.env(db_name) as env:
+            for name, defuse in defuses.items():
+                info(f"Defuse {name}")
+
+                model = defuse.get("model")
+                if not isinstance(model, str):
+                    error("Model must be string")
+                    continue
+
+                domain = defuse.get("domain", [])
+                if not isinstance(domain, list):
+                    error("Domain must be list")
+                    continue
+
+                action = defuse.get("action")
+                if action == "update":
+                    values = defuse.get("values", {})
+                    self._defuse_update(env[model], values, domain)
+                elif action == "delete":
+                    self._defuse_delete(env[model], domain)
+                else:
+                    error(f"Undefined action {action}")
 
     def freeze(self):
         """ Freeze the python packages in the versions.txt """

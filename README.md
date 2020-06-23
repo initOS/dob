@@ -109,6 +109,10 @@ Available commands
   - Start odoo and pass the options directly to Odoo
   - Use `docker-compose up` instead to expose the ports
 
+* `odoo defuse [options]`
+  - Defuse/anonymize the database
+  - Experimental
+
 * `psql`, `pg_dump`, `pg_restore`, `pg_activity`, `createdb`, `dropdb`
   - Postgres utitilies
 
