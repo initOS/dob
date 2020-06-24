@@ -266,7 +266,7 @@ class Defuser:
         field = kw.get("field", None)
         # Use the value of a different field
         if isinstance(field, str):
-            return str(rec[field])
+            return f"{prefix}{rec[field]}{suffix}"
         # Randomize the value
         if isinstance(length, int) and length > 0:
             return prefix + "".join(random.choices(ALNUM, k=length)) + suffix
@@ -685,7 +685,7 @@ class Environment:
     def _defuse_delete(self, env, model, domain):
         """ Runs the delete defusing """
         if model in env:
-            env[model].search(domain).unlink()
+            env[model].with_context(active_test=False).search(domain).unlink()
 
     def _defuse_update(self, env, model, domain, values):
         """ Runs the update defusing """
