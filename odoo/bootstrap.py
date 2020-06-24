@@ -72,11 +72,11 @@ def load_arguments(args):
         "command", metavar="command", nargs="?",
         help="Command to use. Possible choices: "
              "c(onfig), i(nit), r(un), s(hell), t(est), u(pdate), f(reeze), "
-             "flake8, pylint, eslint",
+             "flake8, pylint, eslint, defuse",
         choices=(
             "c", "config", "i", "init", "s", "shell", "t", "test",
             "u", "update", "r", "run", "f", "freeze", "flake8", "pylint",
-            "eslint",
+            "eslint", "defuse",
         ),
     )
     base.add_argument(
@@ -86,9 +86,9 @@ def load_arguments(args):
     return parser.parse_known_args(args)
 
 
-def load_config_arguments(args):
+def load_default_arguments(command, args):
     parser = ArgumentParser(
-        usage="%(prog)s config [options]",
+        usage=f"%(prog)s {command} [options]",
         formatter_class=argparse.RawTextHelpFormatter,
     )
     parser.add_argument(
@@ -145,18 +145,6 @@ def load_shell_arguments(args):
     )
     parser.add_argument(
         "file", nargs="?", help="File to execute",
-    )
-    return parser.parse_known_args(args)
-
-
-def load_test_arguments(args):
-    parser = ArgumentParser(
-        usage="%(prog)s test [options]",
-        formatter_class=argparse.RawTextHelpFormatter,
-    )
-    parser.add_argument(
-        "-c", dest="cfg", default=get_config_file(),
-        help="Configuration file to use. Default: %(default)s",
     )
     return parser.parse_known_args(args)
 
@@ -299,8 +287,7 @@ class Defuser:
         field = kw.get("field", None)
         if field:
             return rec[field]
-        diff = upper - lower
-        return lower + timedelta(days=random.randint(0, diff.days))
+        return lower + timedelta(days=random.randint(0, (upper - lower).days))
 
 
 def merge(a, b):
@@ -664,6 +651,8 @@ class Environment:
         # Generate the configuration with the sections
         options = self.get("odoo", "options", default={})
         for key, value in sorted(options.items()):
+            if key == "load_language":
+                continue
             if "." in key:
                 sec, key = key.split(".", 1)
             else:
@@ -703,12 +692,12 @@ class Environment:
         if not values or model not in env:
             return
 
-        records = env[model].search(domain)
+        records = env[model].with_context(active_test=False).search(domain)
 
         # Split the values in constant and dynamic
         const, dynamic = {}, {}
         for name, defuse_opt in values.items():
-            if name not in model._fields:
+            if name not in records._fields:
                 continue
 
             if isinstance(defuse_opt, dict):
@@ -718,7 +707,7 @@ class Environment:
 
         # Handle the constant values
         if const:
-            records.write({})
+            records.write(const)
 
         # Handle the dynamic values
         if dynamic:
@@ -750,28 +739,29 @@ class Environment:
         db_name = config["db_name"]
 
         info("Running defuse")
-        with self.env(db_name) as env:
-            for name, defuse in defuses.items():
-                info(f"Defuse {name}")
+        with odoo.api.Environment.manage():
+            with self.env(db_name) as env:
+                for name, defuse in defuses.items():
+                    info(f"Defuse {name}")
 
-                model = defuse.get("model")
-                if not isinstance(model, str):
-                    error("Model must be string")
-                    continue
+                    model = defuse.get("model")
+                    if not isinstance(model, str):
+                        error("Model must be string")
+                        continue
 
-                domain = defuse.get("domain", [])
-                if not isinstance(domain, list):
-                    error("Domain must be list")
-                    continue
+                    domain = defuse.get("domain", [])
+                    if not isinstance(domain, list):
+                        error("Domain must be list")
+                        continue
 
-                action = defuse.get("action")
-                if action == "update":
-                    values = defuse.get("values", {})
-                    self._defuse_update(env, model, domain, values)
-                elif action == "delete":
-                    self._defuse_delete(env, model, domain)
-                else:
-                    error(f"Undefined action {action}")
+                    action = defuse.get("action")
+                    if action == "update":
+                        values = defuse.get("values", {})
+                        self._defuse_update(env, model, domain, values)
+                    elif action == "delete":
+                        self._defuse_delete(env, model, domain)
+                    else:
+                        error(f"Undefined action {action}")
 
     def freeze(self):
         """ Freeze the python packages in the versions.txt """
@@ -1001,7 +991,7 @@ if __name__ == "__main__":
         left.append("--help")
 
     if args.command in ("c", "config"):
-        load_config_arguments(left)
+        load_default_arguments("config", left)
         env.dump()
     elif args.command in ("f", "freeze"):
         env.freeze()
@@ -1017,6 +1007,8 @@ if __name__ == "__main__":
         env.update(left)
     elif args.command in ("r", "run"):
         env.start(left)
+    elif args.command in ("defuse",):
+        env.defuse()
     elif show_help:
         load_arguments(["--help"])
     else:
