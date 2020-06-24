@@ -8,6 +8,7 @@ stages:
 before_script:
   - bash setup.sh
   - docker-compose build
+  - docker-compose run --rm odoo odoo init
 
 after_script:
   - docker-compose down
@@ -37,7 +38,6 @@ job_test_eslint:
 job_test_unittest:
   stage: testing
   script:
-    - docker-compose run --rm odoo odoo init
     - docker-compose run --rm odoo odoo update
     - docker-compose run --rm odoo odoo test
   coverage: '/TOTAL.+?(\d+\%)/'
