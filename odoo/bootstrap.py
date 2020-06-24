@@ -216,70 +216,88 @@ def error(msg, *args):
     print(f"\x1b[31m{msg % args}\x1b[0m")
 
 
-def defuse_boolean(rec, **kw):
-    field = kw.get("field")
-    # Use the value of a different field
-    if field:
-        return bool(rec[field])
-    return random.choice((False, True))
+class Defuser:
+    """ Defuser class """
 
+    def defuse(self, rec, name, **kw):
+        field = kw.get("field")
+        if field:
+            return rec[field]
 
-def defuse_int(rec, **kw):
-    lower = kw.get("lower", None)
-    upper = kw.get("upper", None)
-    field = kw.get("field", None)
-    # Use the value of a different field
-    if field:
-        return rec[field]
-    # Randomize the value
-    if isinstance(lower, int) and isinstance(upper, int):
-        return random.randint(lower, upper)
-    raise TypeError("Lower and upper bounds must be integer")
+        field_type = rec._fields[name].type
+        if field_type == "boolean":
+            return self._boolean(rec, name, **kw)
+        if field_type == "integer":
+            return self._integer(rec, name, **kw)
+        if field_type in ("float", "monetary"):
+            return self._float(rec, name, **kw)
+        if field_type == "date":
+            return self._date(rec, name, **kw)
+        if field_type == "datetime":
+            return self._datetime(rec, name, **kw)
+        if field_type in ("char", "html", "text"):
+            return self._text(rec, name, **kw)
+        raise TypeError("Field type is not supported by defuser")
 
+    def _boolean(self, rec, name, **kw):
+        field = kw.get("field")
+        # Use the value of a different field
+        if field:
+            return bool(rec[field])
+        return random.choice((False, True))
 
-def defuse_float(rec, **kw):
-    lower = kw.get("lower", 0.0)
-    upper = kw.get("upper", 1.0)
-    field = kw.get("field", None)
-    # Use the value of a different field
-    if field:
-        return rec[field]
-    # Randomize the value
-    return random.random() * (upper - lower) + lower
+    def _integer(self, rec, name, **kw):
+        lower = kw.get("lower", None)
+        upper = kw.get("upper", None)
+        field = kw.get("field", None)
+        # Use the value of a different field
+        if field:
+            return rec[field]
+        # Randomize the value
+        if isinstance(lower, int) and isinstance(upper, int):
+            return random.randint(lower, upper)
+        raise TypeError("Lower and upper bounds must be integer")
 
+    def _float(self, rec, name, **kw):
+        lower = kw.get("lower", 0.0)
+        upper = kw.get("upper", 1.0)
+        field = kw.get("field", None)
+        # Use the value of a different field
+        if field:
+            return rec[field]
+        # Randomize the value
+        return random.random() * (upper - lower) + lower
 
-def defuse_text(rec, **kw):
-    prefix = kw.get("prefix", "")
-    suffix = kw.get("suffix", "")
-    length = kw.get("length", None)
-    field = kw.get("field", None)
-    # Use the value of a different field
-    if isinstance(field, str):
-        return str(rec[field])
-    # Randomize the value
-    if isinstance(length, int) and length > 0:
-        return prefix + "".join(random.choices(ALNUM, k=length)) + suffix
-    raise TypeError("Length must be integer")
+    def _text(self, rec, name, **kw):
+        prefix = kw.get("prefix", "")
+        suffix = kw.get("suffix", "")
+        length = kw.get("length", None)
+        field = kw.get("field", None)
+        # Use the value of a different field
+        if isinstance(field, str):
+            return str(rec[field])
+        # Randomize the value
+        if isinstance(length, int) and length > 0:
+            return prefix + "".join(random.choices(ALNUM, k=length)) + suffix
+        return prefix + rec[name] + suffix
 
+    def _datetime(self, rec, name, **kw):
+        lower = kw.get("lower", datetime(1970, 1, 1))
+        upper = kw.get("upper", datetime.now())
+        field = kw.get("field", None)
+        if field:
+            return rec[field]
+        diff = upper - lower
+        return lower + timedelta(seconds=random.randint(0, diff.seconds))
 
-def defuse_datetime(rec, **kw):
-    lower = kw.get("lower", datetime(1970, 1, 1))
-    upper = kw.get("upper", datetime.now())
-    field = kw.get("field", None)
-    if field:
-        return rec[field]
-    diff = upper - lower
-    return lower + timedelta(seconds=random.randint(0, diff.seconds))
-
-
-def defuse_date(rec, **kw):
-    lower = kw.get("lower", date(1970, 1, 1))
-    upper = kw.get("upper", date.today())
-    field = kw.get("field", None)
-    if field:
-        return rec[field]
-    diff = upper - lower
-    return lower + timedelta(days=random.randint(0, diff.days))
+    def _date(self, rec, name, **kw):
+        lower = kw.get("lower", date(1970, 1, 1))
+        upper = kw.get("upper", date.today())
+        field = kw.get("field", None)
+        if field:
+            return rec[field]
+        diff = upper - lower
+        return lower + timedelta(days=random.randint(0, diff.days))
 
 
 def merge(a, b):
@@ -672,41 +690,28 @@ class Environment:
         cmd = ("-m", "pip", "install", "-r", "versions.txt")
         call(sys.executable, *cmd, pipe=False)
 
-    def _defuse_delete(self, model, domain):
+    def _defuse_delete(self, env, model, domain):
         """ Runs the delete defusing """
-        model.search(domain).unlink()
+        if model in env:
+            env[model].search(domain).unlink()
 
-    def _defuse_update(self, model, values, domain):
+    def _defuse_update(self, env, model, domain, values):
         """ Runs the update defusing """
-        if not values:
+        if not values or model not in env:
             return
 
-        records = model.search(domain)
-
-        mapping = {
-            "boolean": defuse_boolean,
-            "char": defuse_text,
-            "date": defuse_date,
-            "datetime": defuse_datetime,
-            "float": defuse_float,
-            "html": defuse_text,
-            "integer": defuse_int,
-            "monetary": defuse_float,
-            "text": defuse_text,
-        }
+        records = env[model].search(domain)
 
         # Split the values in constant and dynamic
         const, dynamic = {}, {}
-        for key, value in values.items():
-            if isinstance(value, dict):
-                ftype = model._fields[key].type
-                if ftype not in mapping:
-                    error(f"Field defusing not supported: {key}")
-                    continue
+        for name, defuse_opt in values.items():
+            if name not in model._fields:
+                continue
 
-                dynamic[key] = {**value, 'func': mapping[ftype]}
+            if isinstance(defuse_opt, dict):
+                dynamic[name] = defuse_opt
             else:
-                const[key] = value
+                const[name] = defuse_opt
 
         # Handle the constant values
         if const:
@@ -714,10 +719,11 @@ class Environment:
 
         # Handle the dynamic values
         if dynamic:
+            defuser = Defuser()
             for rec in records:
                 vals = {}
-                for key, field in dynamic.items():
-                    vals[key] = mapping.get(field["type"])(rec, **field)
+                for name, defuse_opt in dynamic.items():
+                    vals[name] = defuser.defuse(rec, name, **defuse_opt)
                 rec.write(vals)
 
     def defuse(self):
@@ -758,9 +764,9 @@ class Environment:
                 action = defuse.get("action")
                 if action == "update":
                     values = defuse.get("values", {})
-                    self._defuse_update(env[model], values, domain)
+                    self._defuse_update(env, model, domain, values)
                 elif action == "delete":
-                    self._defuse_delete(env[model], domain)
+                    self._defuse_delete(env, model, domain)
                 else:
                     error(f"Undefined action {action}")
 
