@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 import argparse
+import glob
 import os
 import random
 import re
@@ -198,7 +199,9 @@ def call(*cmd, cwd=None, pipe=True):
         universal_newlines=True,
     )
     output = proc.communicate()[0]
-    return output.strip() if output else ""
+    if pipe:
+        return output.strip() if output else ""
+    return proc.returncode
 
 
 def info(msg, *args):
@@ -824,18 +827,21 @@ class Environment:
     def ci(self, ci, args):
         """ Run CI tests """
         # Always include this script in the tests
-        args.append("bootstrap.py")
-
         for path in self.get("odoo", "addons_path", default=[]):
-            args.append(path)
+            if ci == "pylint":
+                args.extend(glob.glob(f"{path}/**/*.py", recursive=True))
+            else:
+                args.append(path)
 
         cmd = [sys.executable, "-m", ci]
         if ci == "pylint":
-            args.append("--rcfile=.pylintrc")
+            args.extend(("--rcfile=.pylintrc", "bootstrap.py"))
         elif ci == "eslint":
-            cmd = ["eslint"]
+            cmd = ["eslint", "--no-error-on-unmatched-pattern"]
+        else:
+            args.append("bootstrap.py")
 
-        sys.exit(call(*cmd, *args))
+        sys.exit(call(*cmd, *args, pipe=False))
 
     def test(self, args):
         """ Run tests """
@@ -852,6 +858,7 @@ class Environment:
                 args.extend([f"--cov={path}", path])
 
             args.append("--cov-report=html")
+            args.append("--cov-report=term")
 
         # Load the odoo configuration
         with odoo.api.Environment.manage():
@@ -861,12 +868,9 @@ class Environment:
             # Pass the arguments to pytest
             sys.argv = sys.argv[:1] + args
             result = pytest.main()
-            if result:
+            if result and result != pytest.ExitCode.NO_TESTS_COLLECTED:
                 sys.exit(result)
-
-        # Create the coverage report
-        call(sys.executable, "-m", "coverage", "html")
-        sys.exit()
+            sys.exit()
 
     def install_all(self, db_name, modules):
         """ Install all modules """

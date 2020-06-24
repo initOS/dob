@@ -1,0 +1,44 @@
+variables:
+  COMPOSE_PROJECT_NAME: "$CI_JOB_ID"
+
+stages:
+  - init
+  - testing
+
+before_script:
+  - bash setup.sh
+  - docker-compose build
+  - docker-compose run --rm odoo odoo init
+
+after_script:
+  - docker-compose down
+  - git clean -dfx --exclude=odoo/htmlcov
+
+# Serialize the build of the image
+job_init:
+  stage: init
+  script: /bin/true
+
+# Run the tests in parallel
+job_test_flake8:
+  stage: testing
+  script: docker-compose run --rm odoo odoo flake8
+  when: on_success
+
+job_test_pylint:
+  stage: testing
+  script: docker-compose run --rm odoo odoo pylint
+  when: on_success
+
+job_test_eslint:
+  stage: testing
+  script: docker-compose run --rm odoo odoo eslint
+  when: on_success
+
+job_test_unittest:
+  stage: testing
+  script:
+    - docker-compose run --rm odoo odoo update
+    - docker-compose run --rm odoo odoo test
+  coverage: '/TOTAL.+?(\d+\%)/'
+  when: on_success
