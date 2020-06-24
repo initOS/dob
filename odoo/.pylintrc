@@ -42,6 +42,10 @@ enable=anomalous-backslash-in-string,
     too-few-format-args,
     unreachable,
 
+[DESIGN]
+# Maximum number of parents for a class (see R0901).
+max-parents=15
+
 [REPORTS]
 msg-template={path}:{line}: [{msg_id}({symbol}), {obj}] {msg}
 output-format=colorized
