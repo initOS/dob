@@ -8,6 +8,7 @@ import string
 import sys
 import threading
 import traceback
+import uuid
 from argparse import ArgumentParser
 from configparser import ConfigParser
 from contextlib import closing, contextmanager
@@ -264,6 +265,7 @@ class Defuser:
         suffix = kw.get("suffix", "")
         length = kw.get("length", None)
         field = kw.get("field", None)
+        vuuid = kw.get("uuid", None)
         # Use the value of a different field
         if isinstance(field, str):
             return f"{prefix}{rec[field]}{suffix}"
