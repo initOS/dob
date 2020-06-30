@@ -266,6 +266,14 @@ class Defuser:
         length = kw.get("length", None)
         field = kw.get("field", None)
         vuuid = kw.get("uuid", None)
+        if vuuid == 1:
+            return str(uuid.uuid1())
+        if vuuid == 3:
+            return str(uuid.uuid3())
+        if vuuid == 4:
+            return str(uuid.uuid4())
+        if vuuid == 5:
+            return str(uuid.uuid5())
         # Use the value of a different field
         if isinstance(field, str):
             return f"{prefix}{rec[field]}{suffix}"
@@ -756,7 +764,7 @@ class Environment:
                         error("Domain must be list")
                         continue
 
-                    action = defuse.get("action")
+                    action = defuse.get("action", "update")
                     if action == "update":
                         values = defuse.get("values", {})
                         self._defuse_update(env, model, domain, values)
