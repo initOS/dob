@@ -266,14 +266,11 @@ class Defuser:
         length = kw.get("length", None)
         field = kw.get("field", None)
         vuuid = kw.get("uuid", None)
+        # Support for uuid1 and uuid4
         if vuuid == 1:
             return str(uuid.uuid1())
-        if vuuid == 3:
-            return str(uuid.uuid3())
         if vuuid == 4:
             return str(uuid.uuid4())
-        if vuuid == 5:
-            return str(uuid.uuid5())
         # Use the value of a different field
         if isinstance(field, str):
             return f"{prefix}{rec[field]}{suffix}"
