@@ -27,6 +27,7 @@ services:
       PGPASSWORD: *dbpass
       PGPORT: *dbport
       PGUSER: *dbuser
+    image: dob
     logging:
       driver: "json-file"
       options:
