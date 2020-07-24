@@ -1,4 +1,7 @@
 #!/usr/bin/env python3
+# © 2020 Florian Kantelberg (initOS GmbH)
+# License Apache-2.0 (http://www.apache.org/licenses/).
+
 import argparse
 import glob
 import os

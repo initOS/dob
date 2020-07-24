@@ -1,5 +1,5 @@
-Bootstrap odoo
-==============
+dob.py
+======
 
 Yaml based Odoo deployment tool.
 
