@@ -835,11 +835,11 @@ class Environment:
 
         cmd = [sys.executable, "-m", ci]
         if ci == "pylint":
-            args.extend(("--rcfile=.pylintrc", "bootstrap.py"))
+            args.extend(("--rcfile=.pylintrc", "dob.py"))
         elif ci == "eslint":
             cmd = ["eslint", "--no-error-on-unmatched-pattern"]
         else:
-            args.append("bootstrap.py")
+            args.append("dob.py")
 
         sys.exit(call(*cmd, *args, pipe=False))
 
