@@ -80,12 +80,12 @@ Available commands
 
 * `odoo test [options]`
   - Start unittests passing the given parameter
-  - Runs only on files specified `odoo:addons_path`
+  - Runs only on files specified in `odoo:addons_path`
   - Coverage report can be created if `bootstrap:coverage` is set
 
 * `odoo flake8 [options]`
   - Start flake8 tests passing the given parameter
-  - Runs only on files specified `odoo:addons_path`
+  - Runs only on files specified in `odoo:addons_path`
 
 * `odoo eslint [options]`
   - Start eslint tests passing the given parameter
@@ -93,7 +93,7 @@ Available commands
 
 * `odoo pylint [options]`
   - Start pylint tests passing the given parameter
-  - Runs only on files specified `odoo:addons_path`
+  - Runs only on files specified in `odoo:addons_path`
 
 * `odoo update [options] [modules]`
   - Generation of configuration file `etc/odoo.cfg`
