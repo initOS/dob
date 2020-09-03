@@ -1,4 +1,6 @@
-FROM python:3.8-slim
+ARG PYTHON_VERSION
+
+FROM python:${PYTHON_VERSION}-slim
 
 ADD odoo/apt.txt /srv/odoo/apt.txt
 
