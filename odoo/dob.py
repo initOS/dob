@@ -300,15 +300,20 @@ class Defuser:
         return lower + timedelta(days=random.randint(0, (upper - lower).days))
 
 
-def merge(a, b):
+def merge(a, b, *, replace=None):
     """ Merges dicts and lists from the configuration structure """
     if isinstance(a, dict) and isinstance(b, dict):
+        if not replace:
+            replace = set()
+
         res = {}
         for key in set(a).union(b):
             if key not in a:
                 res[key] = b[key]
             elif key not in b:
                 res[key] = a[key]
+            elif key in replace:
+                res[key] = b[key]
             else:
                 res[key] = merge(a[key], b[key])
         return res
@@ -596,7 +601,7 @@ class Environment:
 
         default = self.get(SECTION, "repo", default={})
         repos = {
-            key: merge(default, value)
+            key: merge(default, value, replace=["merges"])
             for key, value in self.get("repos", default={}).items()
         }
         for repo_dict in get_repos(repos, args.force):
