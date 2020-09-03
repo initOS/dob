@@ -1,0 +1,10 @@
+version: '3'
+
+services:
+  # Database
+  db:
+    networks:
+      default:
+      public:
+    ports:
+      - "127.0.0.1:6543:5432"

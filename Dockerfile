@@ -2,13 +2,13 @@ FROM python:3.8-slim
 
 ADD odoo/apt.txt /srv/odoo/apt.txt
 
-ARG WKHTMLTOPDF_VERSION=0.12.5-1.buster_amd64
+ARG WKHTMLTOPDF_VERSION=0.12.5
 ARG WKHTMLTOPDF_CHECKSUM='dfab5506104447eef2530d1adb9840ee3a67f30caaad5e9bcb8743ef2f9421bd'
 
 RUN apt-get update && \
   export DEBIAN_FRONTEND=noninteractive && \
   cat /srv/odoo/apt.txt | xargs apt-get install --no-install-recommends -yqq && \
-  curl -SLo wkhtmltox.deb https://github.com/wkhtmltopdf/wkhtmltopdf/releases/download/${WKHTMLTOPDF_VERSION}/wkhtmltox_${WKHTMLTOPDF_VERSION}.deb && \
+  curl -SLo wkhtmltox.deb https://github.com/wkhtmltopdf/wkhtmltopdf/releases/download/${WKHTMLTOPDF_VERSION}/wkhtmltox_${WKHTMLTOPDF_VERSION}-1.buster_amd64.deb && \
   echo "${WKHTMLTOPDF_CHECKSUM}  wkhtmltox.deb" | sha256sum -c - && \
   apt-get install -yqq --no-install-recommends ./wkhtmltox.deb && \
   rm wkhtmltox.deb && \
