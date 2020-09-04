@@ -9,3 +9,4 @@ Environment variables of `.env`
   - HTTP_PORT .. Regular HTTP port. Default is `127.0.0.1:8069`.
   - HTTP_LONGPOLLING_PORT .. Longpolling port. Default is `127.0.0.1:8072`.
   - MAILHOG_PORT .. HTTP port of the mailsink. Default is `127.0.0.1:8025`.
+  - DATABASE_PORT .. Developer only access to the database. Default is `6543`.

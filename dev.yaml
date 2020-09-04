@@ -9,4 +9,4 @@ services:
       default:
       public:
     ports:
-      - "127.0.0.1:6543:5432"
+      - "127.0.0.1:${DATABASE_PORT:-6543}:5432"
