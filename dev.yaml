@@ -1,7 +1,9 @@
+# This file is used to allow developer access to the database and
+# the usage of GUI database tools. Do not use in production systems
+
 version: '3'
 
 services:
-  # Database
   db:
     networks:
       default:
