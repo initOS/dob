@@ -19,7 +19,7 @@ from datetime import date, datetime, timedelta
 from multiprocessing import cpu_count
 from subprocess import PIPE, Popen
 
-# pylint: disable=import-error,wrong-import-order
+# pylint: disable=import-error,wrong-import-order,print-used
 import pytest
 import yaml
 from git_aggregator.config import get_repos
@@ -264,6 +264,7 @@ class Defuser:
         return random.random() * (upper - lower) + lower
 
     def _text(self, rec, name, **kw):
+        # pylint: disable=attribute-deprecated
         prefix = kw.get("prefix", "")
         suffix = kw.get("suffix", "")
         length = kw.get("length", None)
