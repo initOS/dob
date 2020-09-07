@@ -886,6 +886,7 @@ class Environment:
 
         config["init"] = dict.fromkeys(modules, 1)
         config["update"] = {}
+        config["overwrite_existing_translations"] = True
         without_demo = self.opt("without_demo", default=True)
         languages = self.opt("load_language")
         if languages and isinstance(languages, list):
@@ -907,6 +908,7 @@ class Environment:
         modules = self.get_modules().difference(blacklist or [])
         config["init"] = {}
         config["update"] = dict.fromkeys(modules, 1)
+        config["overwrite_existing_translations"] = True
         odoo.modules.registry.Registry.new(db_name, update_module=True)
 
     def update_changed(self, db_name, blacklist=None):
