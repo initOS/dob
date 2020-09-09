@@ -1,0 +1,12 @@
+*.pyc
+.coverage
+.env
+.idea
+.pytest_cache
+.git
+filestore
+ssh
+venv
+**/__pycache__
+odoo/parts
+odoo/src
