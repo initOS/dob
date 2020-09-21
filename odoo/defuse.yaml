@@ -1,0 +1,87 @@
+
+odoo:
+  defuse:
+    defuse_ir_cron:
+      model: ir.cron
+      values:
+        active: False
+        cron_name: &cron
+          suffix: " (defused)"
+        name: *cron
+
+    defuse_uuid:
+      model: ir.config.parameter
+      field:
+        type: text
+      values:
+        uuid: 4
+
+    defuse_mail_mail:
+      action: update
+      model: mail.mail
+      values:
+        state: exception
+
+    defuse_fetchmail_server:
+      action: update
+      model: fetchmail.server
+      values:
+        active: False
+        password: &defused_pw "notmypass"
+
+    defuse_ir_mail_server:
+      action: update
+      model: ir.mail.server
+      values:
+        smtp_host: &defused_host "127.0.0.1"
+        smtp_port: 1025
+        smtp_encryption: "none"
+        smtp_user: ""
+        smtp_pass: ""
+
+    defuse_magento_backend:
+      action: update
+      model: magento.backend
+      values:
+        password: *defused_pw
+        username: &defused_uname "notmyuser"
+        location:
+
+    defuse_magento_configure:
+      action: update
+      model: magento.configure
+      values:
+        name: ""
+        user: *defused_uname
+        pwd: *defused_pw
+        token: ""
+        active: False
+
+    defuse_gambio_backend:
+      action: update
+      model: gambio.backend
+      values:
+        password: *defused_pw
+        username: *defused_uname
+        session_key: &defused_session_key "notmysession"
+        location: ""
+
+    defuse_connector_mysql_data_server_backend:
+      action: update
+      model: connector.mysql.data.server.backend
+      values:
+        password: *defused_pw
+        user: *defused_uname
+        host: *defused_host
+
+    defuse_payment_acquirer:
+      action: update
+      model: payment.acquirer
+      column_name: paypal_email_account
+        values:
+          environment: "test"
+          paypal_seller_account: *defused_uname
+          paypal_email_account: &defused_mail "notmymail"
+
+# TO DO: defuse_impexp_task, _defuse_impexp_task_config,
+#        defuse_queue_job
