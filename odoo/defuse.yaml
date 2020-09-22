@@ -9,28 +9,32 @@ odoo:
           suffix: " (defused)"
         name: *cron
 
+    _defuse_impexp_task_config:
+
+    defuse_impexp_task:
+
+    defuse_queue_job:
+      action: delete
+      model: queue.job
+
     defuse_uuid:
       model: ir.config.parameter
-      field:
-        type: text
+      # domain: key: "database.uuid" ?
       values:
         uuid: 4
 
     defuse_mail_mail:
-      action: update
       model: mail.mail
       values:
         state: exception
 
     defuse_fetchmail_server:
-      action: update
       model: fetchmail.server
       values:
         active: False
         password: &defused_pw "notmypass"
 
     defuse_ir_mail_server:
-      action: update
       model: ir.mail.server
       values:
         smtp_host: &defused_host "127.0.0.1"
@@ -40,7 +44,6 @@ odoo:
         smtp_pass: ""
 
     defuse_magento_backend:
-      action: update
       model: magento.backend
       values:
         password: *defused_pw
@@ -48,7 +51,6 @@ odoo:
         location:
 
     defuse_magento_configure:
-      action: update
       model: magento.configure
       values:
         name: ""
@@ -58,7 +60,6 @@ odoo:
         active: False
 
     defuse_gambio_backend:
-      action: update
       model: gambio.backend
       values:
         password: *defused_pw
@@ -67,7 +68,6 @@ odoo:
         location: ""
 
     defuse_connector_mysql_data_server_backend:
-      action: update
       model: connector.mysql.data.server.backend
       values:
         password: *defused_pw
@@ -75,13 +75,123 @@ odoo:
         host: *defused_host
 
     defuse_payment_acquirer:
-      action: update
       model: payment.acquirer
-      column_name: paypal_email_account
-        values:
-          environment: "test"
-          paypal_seller_account: *defused_uname
-          paypal_email_account: &defused_mail "notmymail"
+      values:
+        environment: "test"
+        paypal_seller_account: *defused_uname
+        paypal_email_account: &defused_mail "notmymail"
+        paymill_public_key: &defused_key "notmykey"
+        paymill_private_key: *defused_key
+        paymill_merchant_id: &defused_id "notmyid"
+
+    defuse_website_cdn:
+      model: website
+      values:
+        cdn_activated: "f"
+
+    defuse_hr_attendance_terminal:
+      model: hr.attendance.terminal
+      values:
+        ip: *defused_host
+        host: "localhost"
+        license_nr: "ABC1DEFG23HI"
+
+    defuse_stock_connect_yellowcube:
+      model: stock.connect
+      values:
+        yc_wsdl_endpoint: "yellowcube-test.xml"
+        #replace(yc_wsdl_endpoint, 'yellocube.xml',
+        #        'yellowcube-test.xml')
+
+    defuse_base_newsletter_sendy:
+      model: ir.config.parameter
+      domain:
+        key: "sendy_list"
+      values:
+       value: ""
+
+    defuse_enterprise_contract:
+      action: delete
+      model: ir.config.parameter
+      domain:
+        key:
+          - "database.enterprise_code"
+          # LIKE "database.expiration_%"??
+
+    defuse web_base_url:
+      action: delete
+      model: ir.config.paramter
+      domain:
+        key:
+          - "web.base.url"
+          - "web.base.url.freeze"
+          - "report.url"
+
+    defuse_shipcloud:
+      model: ir.config.parameter
+      domain:
+        key: "shipcloud_api_key"
+      values:
+        value: ""
+
+    defuse_owncloud:
+      model: ir.config.parameter
+      domain:
+        key:
+          - "owncloud_url"
+          - "owncloud_password"
+      values:
+        value: ""
+
+    defuse_google_calendar:
+      model: ir.config.paramter
+      domain:
+        # key like "google_calendar_client_%"
+      values:
+        value: ""
+
+    defuse_google_drive:
+      model: ir.config.paramter
+      domain:
+        # key like "google_drive_%"
+      values:
+        value: ""
+
+    defuse_google_management:
+      model: ir.config.parameter
+      domain:
+        # key like "goolge_managment_client_%"
+
+    defuse_nav_backend:
+      model: nav.backend
+      values:
+        http_password: *defused_pw
+        http_username: *defused_uname
+        url_product_export:
+        url_product_stock_import:
+        url_order_export:
+        url_order_state_import:
+        url_purchase_order_export:
+        url_purchase_order_state_import:
+        # CONCAT "tests/" before old value?
+
+    defuse_oregional_restapi_application:
+      model: oregional.restapi.application
+      values:
+        client_id: ""
+        client_http_basic_access_authentication: ""
+        client_secret: ""
+        odoo_id: ""
+        odoo_secret: ""
+
+    defuse_oregional_restapi_authorization:
+      model: oregional.restapi.authorization
+      values:
+        access_token: ""
+        user_id: ""
+        user_secret: ""
+        refresh_token: ""
+
 
 # TO DO: defuse_impexp_task, _defuse_impexp_task_config,
 #        defuse_queue_job
