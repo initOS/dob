@@ -10,3 +10,8 @@ venv
 **/__pycache__
 odoo/parts
 odoo/src
+odoo/*.txt
+!odoo/versions.txt
+!odoo/requirements.txt
+!odoo/apt.txt
+!odoo/npm.txt
