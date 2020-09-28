@@ -19,7 +19,8 @@ odoo:
 
     defuse_uuid:
       model: ir.config.parameter
-      # domain: key: "database.uuid" ?
+      domain:
+        key: "database.uuid"
       values:
         uuid: 4
 
@@ -96,13 +97,6 @@ odoo:
         host: "localhost"
         license_nr: "ABC1DEFG23HI"
 
-    defuse_stock_connect_yellowcube:
-      model: stock.connect
-      values:
-        yc_wsdl_endpoint: "yellowcube-test.xml"
-        #replace(yc_wsdl_endpoint, 'yellocube.xml',
-        #        'yellowcube-test.xml')
-
     defuse_base_newsletter_sendy:
       model: ir.config.parameter
       domain:
@@ -114,9 +108,7 @@ odoo:
       action: delete
       model: ir.config.parameter
       domain:
-        key:
-          - "database.enterprise_code"
-          # LIKE "database.expiration_%"??
+        - ["key", "=like", "database.expiration_%"]
 
     defuse web_base_url:
       action: delete
@@ -146,27 +138,28 @@ odoo:
     defuse_google_calendar:
       model: ir.config.paramter
       domain:
-        # key like "google_calendar_client_%"
+        - ["key", "=like", "google_calendar_client"]
       values:
         value: ""
 
     defuse_google_drive:
       model: ir.config.paramter
       domain:
-        # key like "google_drive_%"
+        - ["key", "=like", "google_drive"]
       values:
         value: ""
 
     defuse_google_management:
       model: ir.config.parameter
       domain:
-        # key like "goolge_managment_client_%"
+        - ["key", "=like", "google_management_client_%"]
 
     defuse_nav_backend:
       model: nav.backend
       values:
         http_password: *defused_pw
         http_username: *defused_uname
+        prefix: "tests/"
         url_product_export:
         url_product_stock_import:
         url_order_export:
