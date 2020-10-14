@@ -1,9 +1,9 @@
 
 odoo:
   defuse:
-    defuse_ir_cron:
+     defuse_ir_cron:
       model: ir.cron
-      values:
+     values:
         active: False
         cron_name: &cron
           suffix: " (defused)"
@@ -20,7 +20,7 @@ odoo:
     defuse_uuid:
       model: ir.config.parameter
       domain:
-        key: "database.uuid"
+        - ["key", "=", "database.uuid"]
       values:
         uuid: 4
 
@@ -100,7 +100,7 @@ odoo:
     defuse_base_newsletter_sendy:
       model: ir.config.parameter
       domain:
-        key: "sendy_list"
+        - ["key", "=", "sendy_list"]
       values:
        value: ""
 
@@ -114,38 +114,33 @@ odoo:
       action: delete
       model: ir.config.paramter
       domain:
-        key:
-          - "web.base.url"
-          - "web.base.url.freeze"
-          - "report.url"
+        - ["key", "in", ("web.base.url", "web.base.url.freeze", "report.url")]
 
     defuse_shipcloud:
       model: ir.config.parameter
       domain:
-        key: "shipcloud_api_key"
+        - ["key", "=", "shipcloud_api_key"]
       values:
         value: ""
 
     defuse_owncloud:
       model: ir.config.parameter
       domain:
-        key:
-          - "owncloud_url"
-          - "owncloud_password"
+        - ["key", "in", ("owncloud_url", "owncloud_password")]
       values:
         value: ""
 
     defuse_google_calendar:
       model: ir.config.paramter
       domain:
-        - ["key", "=like", "google_calendar_client"]
+        - ["key", "=like", "google_calendar_client_%"]
       values:
         value: ""
 
     defuse_google_drive:
       model: ir.config.paramter
       domain:
-        - ["key", "=like", "google_drive"]
+        - ["key", "=like", "google_drive_%"]
       values:
         value: ""
 
