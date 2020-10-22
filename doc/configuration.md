@@ -17,8 +17,7 @@ Files
 * `odoo.local.yaml` .. Machine specific configuration file
 * `odoo.project.yaml` .. Project specific configuration file
 * `odoo.yaml` .. General configuration file
-* `requirements.txt` .. Requirements for the bootstrapping. Do not use for odoo
-  dependencies.
+* `requirements.txt` .. Requirements for the bootstrapping.
 * `versions.txt` .. Python dependencies for odoo. Used for freezing.
 
 Configuration
