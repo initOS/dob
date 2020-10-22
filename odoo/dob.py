@@ -819,7 +819,7 @@ class Environment:
             sys.argv = [""]
 
         shell = Shell()
-        sys.exit(shell.run(["-c", os.path.abspath("etc/odoo.cfg")]))
+        sys.exit(shell.run(["-c", os.path.abspath("etc/odoo.cfg"), "--no-http"]))
 
     def start(self, args):
         """ Start Odoo without wrapper """
