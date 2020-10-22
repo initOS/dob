@@ -112,7 +112,7 @@ def load_freeze_arguments(args):
         help="Configuration file to use. Default: %(default)s",
     )
     parser.add_argument(
-        "-mode", choices=("all", "ask", "skip"), default="ask",
+        "--mode", choices=("all", "ask", "skip"), default="ask",
         help="Mode of the freeze with\n"
              "`all` .. Freeze all and don't ask\n"
              "`skip` .. Skip existing files\n"
