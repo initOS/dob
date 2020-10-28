@@ -8,10 +8,6 @@ Available commands
 * `odoo init [options]`
   - Generation of configuration file `etc/odoo.cfg`
   - Checking out of the repositories
-  - Initial generation of versions.txt file
-    + Can aggregate the requirements.txt file of all repositories
-    + Experimental
-  - Handling the changes in requirements.txt by freezing python modules
 
 * `odoo freeze`
   - Freeze the python packages into the versions.txt

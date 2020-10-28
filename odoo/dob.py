@@ -135,10 +135,6 @@ def load_init_arguments(args):
         "-j", "--jobs", dest="jobs", default=cpu_count(), type=int,
         help="Number of jobs used for the bootstrapping. Default %(default)s",
     )
-    parser.add_argument(
-        "-freeze", action="store_false", default=True,
-        help="freeze python versions at init",
-    )
     return parser.parse_known_args(args)
 
 
@@ -642,27 +638,6 @@ class Environment:
                 traceback.print_exception(exc_type, exc_obj, exc_trace)
             sys.exit(1)
 
-    def generate_requirements(self):
-        """ Generate an initial versions.txt for python packages """
-        if os.path.isfile("versions.txt"):
-            info("versions.txt already exists")
-            return
-
-        # Get the requirements of all repositories
-        info("Generating requirements")
-        requirements = set()
-        for path, repo in self.get("repos", default={}).items():
-            info(f" * {path}")
-            if repo.get("requirements"):
-                reqs = self._read(os.path.join(path, "requirements.txt"), [])
-                requirements.update(reqs)
-
-        # Create the requirement file
-        if requirements:
-            with open("versions.txt", "w+") as fp:
-                for req in sorted(requirements):
-                    fp.write(req + "\n")
-
     def generate_config(self):
         """ Generate the Odoo configuration file """
         info("Generating configuration file")
@@ -799,17 +774,11 @@ class Environment:
         """ Initialize the environment """
         args, _ = load_init_arguments(args)
 
-        if args.freeze:
-            self.freeze()
-
         if args.config:
             self.generate_config()
 
         if args.repos:
             self.bootstrap(args)
-
-        if args.versions:
-            self.generate_requirements()
 
     def shell(self, args):
         """ Start an Odoo shell """
