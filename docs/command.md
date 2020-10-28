@@ -11,6 +11,7 @@ Available commands
   - Initial generation of versions.txt file
     + Can aggregate the requirements.txt file of all repositories
     + Experimental
+  - Handling the changes in requirements.txt by freezing python modules
 
 * `odoo freeze`
   - Freeze the python packages into the versions.txt

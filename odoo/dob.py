@@ -135,6 +135,10 @@ def load_init_arguments(args):
         "-j", "--jobs", dest="jobs", default=cpu_count(), type=int,
         help="Number of jobs used for the bootstrapping. Default %(default)s",
     )
+    parser.add_argument(
+        "-freeze", action="store_false", default=True,
+        help="freeze python versions at init",
+    )
     return parser.parse_known_args(args)
 
 
@@ -794,6 +798,9 @@ class Environment:
     def init(self, args):
         """ Initialize the environment """
         args, _ = load_init_arguments(args)
+
+        if args.freeze:
+            self.freeze()
 
         if args.config:
             self.generate_config()
