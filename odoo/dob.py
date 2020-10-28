@@ -120,10 +120,6 @@ def load_init_arguments(args):
         help="Skip the bootstrapping of the repositories",
     )
     parser.add_argument(
-        "-versions", action="store_false", default=True,
-        help="Skip the bootstrapping of the versions.txt",
-    )
-    parser.add_argument(
         "-f", "--force", action="store_true", default=False,
         help="Force the bootstrapping of repositories by stashing",
     )
@@ -666,16 +662,6 @@ class Environment:
         # Write the configuration
         with open('etc/odoo.cfg', 'w+') as fp:
             cp.write(fp)
-
-    def install_packages(self):
-        """ Install all packages from the versions.txt """
-        if not os.path.isfile("versions.txt"):
-            info("Missing versions.txt. You should freeze.")
-            return
-
-        info("Installing packages")
-        cmd = ("-m", "pip", "install", "-r", "versions.txt")
-        call(sys.executable, *cmd, pipe=False)
 
     def _defuse_delete(self, env, model, domain):
         """ Runs the delete defusing """
