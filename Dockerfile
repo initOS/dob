@@ -35,9 +35,8 @@ RUN cat /srv/odoo/npm.txt | xargs npm install --global
 ADD odoo/*.txt /srv/odoo/
 RUN if [ -r '/srv/odoo/versions.txt' ]; \
         then python3 -m pip install --no-cache-dir -r /srv/odoo/versions.txt; \
-    else \
-        python3 -m pip install --no-cache-dir -r /srv/odoo/requirements.txt; \
     fi
+RUN python3 -m pip install --no-cache-dir -r /srv/odoo/requirements.txt
 
 COPY bin/* /usr/local/bin/
 

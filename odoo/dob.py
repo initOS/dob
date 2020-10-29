@@ -120,10 +120,6 @@ def load_init_arguments(args):
         help="Skip the bootstrapping of the repositories",
     )
     parser.add_argument(
-        "-versions", action="store_false", default=True,
-        help="Skip the bootstrapping of the versions.txt",
-    )
-    parser.add_argument(
         "-f", "--force", action="store_true", default=False,
         help="Force the bootstrapping of repositories by stashing",
     )
@@ -638,27 +634,6 @@ class Environment:
                 traceback.print_exception(exc_type, exc_obj, exc_trace)
             sys.exit(1)
 
-    def generate_requirements(self):
-        """ Generate an initial versions.txt for python packages """
-        if os.path.isfile("versions.txt"):
-            info("versions.txt already exists")
-            return
-
-        # Get the requirements of all repositories
-        info("Generating requirements")
-        requirements = set()
-        for path, repo in self.get("repos", default={}).items():
-            info(f" * {path}")
-            if repo.get("requirements"):
-                reqs = self._read(os.path.join(path, "requirements.txt"), [])
-                requirements.update(reqs)
-
-        # Create the requirement file
-        if requirements:
-            with open("versions.txt", "w+") as fp:
-                for req in sorted(requirements):
-                    fp.write(req + "\n")
-
     def generate_config(self):
         """ Generate the Odoo configuration file """
         info("Generating configuration file")
@@ -687,16 +662,6 @@ class Environment:
         # Write the configuration
         with open('etc/odoo.cfg', 'w+') as fp:
             cp.write(fp)
-
-    def install_packages(self):
-        """ Install all packages from the versions.txt """
-        if not os.path.isfile("versions.txt"):
-            info("Missing versions.txt. You should freeze.")
-            return
-
-        info("Installing packages")
-        cmd = ("-m", "pip", "install", "-r", "versions.txt")
-        call(sys.executable, *cmd, pipe=False)
 
     def _defuse_delete(self, env, model, domain):
         """ Runs the delete defusing """
@@ -800,9 +765,6 @@ class Environment:
 
         if args.repos:
             self.bootstrap(args)
-
-        if args.versions:
-            self.generate_requirements()
 
     def shell(self, args):
         """ Start an Odoo shell """
