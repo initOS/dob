@@ -1,17 +1,17 @@
 
 odoo:
   defuse:
-     defuse_ir_cron:
+    defuse_ir_cron:
       model: ir.cron
-     values:
+      values:
         active: False
         cron_name: &cron
           suffix: " (defused)"
         name: *cron
 
-    _defuse_impexp_task_config:
+    # _defuse_impexp_task_config:
 
-    defuse_impexp_task:
+    # defuse_impexp_task:
 
     defuse_queue_job:
       action: delete
@@ -114,7 +114,9 @@ odoo:
       action: delete
       model: ir.config.paramter
       domain:
-        - ["key", "in", ("web.base.url", "web.base.url.freeze", "report.url")]
+        - ["key", "in", "web.base.url"]
+        - ["key", "in", "web.base.url.freeze"]
+        - ["key", "in", "report.url"]
 
     defuse_shipcloud:
       model: ir.config.parameter
@@ -126,7 +128,8 @@ odoo:
     defuse_owncloud:
       model: ir.config.parameter
       domain:
-        - ["key", "in", ("owncloud_url", "owncloud_password")]
+        - ["key", "in", "owncloud_url"]
+        - ["key", "in", "owncloud_password"]
       values:
         value: ""
 
