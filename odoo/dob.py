@@ -824,11 +824,12 @@ class Environment:
 
             # Aggregate the used commits from each specified merge
             tmp = []
-            for remote in repo.get("merges", default_merges):
-                name = f"refs/remotes/{remote.replace(' ', '/')}"
-                remote = remote.split()[0]
+            for entry in repo.get("merges", default_merges):
+                name = f"refs/remotes/{entry.replace(' ', '/')}"
                 if name in remotes:
-                    tmp.append(f"{remote} {remotes[name]}")
+                    tmp.append(f"{entry.split()[0]} {remotes[name]}")
+                else:
+                    tmp.append(entry)
 
             if tmp:
                 commits[path] = {"merges": tmp}
