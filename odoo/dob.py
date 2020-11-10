@@ -50,6 +50,7 @@ except ImportError:
 
 
 ALNUM = string.ascii_letters + string.digits
+ODOO_CONFIG = os.path.abspath("etc/odoo.cfg")
 SECTION = "bootstrap"
 
 # Mapping of environment variables to configurations
@@ -339,12 +340,15 @@ def merge(a, b, *, replace=None):
             elif key in replace:
                 res[key] = b[key]
             else:
-                res[key] = merge(a[key], b[key])
+                res[key] = merge(a[key], b[key], replace=replace)
         return res
+
     if isinstance(a, list) and isinstance(b, list):
         return a + b
+
     if isinstance(a, set) and isinstance(b, set):
         return a.union(b)
+
     return b
 
 
@@ -411,6 +415,7 @@ class Environment:
         info("Loading configuration file")
         self.config = {}
         self._load_config(cfg)
+        self._load_config("odoo.versions.yaml", False)
         self._post_process_config()
 
     def _post_process_config(self):
@@ -532,8 +537,12 @@ class Environment:
         """ Simply output the rendered configuration file """
         print(yaml.dump(self.config))
 
-    def _load_config(self, cfg):
+    def _load_config(self, cfg, raise_if_missing=True):
         """ Load and process a configuration file """
+        if not os.path.isfile(cfg) and not raise_if_missing:
+            warn(f" * {cfg}")
+            return
+
         info(f" * {cfg}")
         with open(cfg) as fp:
             options = yaml.load(fp, Loader=yaml.FullLoader)
@@ -549,7 +558,7 @@ class Environment:
             raise TypeError(f"{SECTION}:extend must be str or list")
 
         # Merge the configurations
-        self.config = merge(self.config, options)
+        self.config = merge(self.config, options, replace=["merges"])
 
     def _init_odoo(self):
         """ Initialize Odoo to enable the module import """
@@ -687,7 +696,7 @@ class Environment:
                 cp.set(sec, key, str(value))
 
         # Write the configuration
-        with open('etc/odoo.cfg', 'w+') as fp:
+        with open(ODOO_CONFIG, 'w+') as fp:
             cp.write(fp)
 
     def _defuse_delete(self, env, model, domain):
@@ -740,8 +749,7 @@ class Environment:
         from odoo.tools import config
 
         # Load the Odoo configuration
-        cfg = os.path.abspath("etc/odoo.cfg")
-        config.parse_config(["-c", cfg])
+        config.parse_config(["-c", ODOO_CONFIG])
         odoo.cli.server.report_configuration()
 
         db_name = config["db_name"]
@@ -796,32 +804,43 @@ class Environment:
 
     def _freeze_repositories(self, file, mode="ask"):
         """ Freeze the repositories """
+
+        # Get the default merges dict from the configuration
+        version = self.get(SECTION, "version", default="0.0")
+        default_merges = self.get(
+            SECTION, "repo", "merges", default=[f"origin {version}"],
+        )
+
+        # Get the used remotes and commits from the repositoriey
         commits = {}
         for path, repo in self.get("repos", default={}).items():
+            # This will return all branches with "<remote> <commit>" syntax
             output = call(
                 "git", "branch", "-va",
-                "--format=%(refname:rstrip=1) %(objectname)",
+                "--format=%(refname) %(objectname)",
                 cwd=path,
             )
-
             remotes = dict(line.split() for line in output.splitlines())
-            tmp = {}
-            for remote in repo.get("remotes", {}):
-                name = f"refs/remotes/{remote}"
+
+            # Aggregate the used commits from each specified merge
+            tmp = []
+            for remote in repo.get("merges", default_merges):
+                name = f"refs/remotes/{remote.replace(' ', '/')}"
+                remote = remote.split()[0]
                 if name in remotes:
-                    tmp[remote] = remotes[name]
+                    tmp.append(f"{remote} {remotes[name]}")
 
             if tmp:
-                commits[path] = tmp
+                commits[path] = {"merges": tmp}
 
         if not commits:
             return
 
-        info("Commits of the repository remotes to freeze")
-        for path, remotes in sorted(commits.items()):
-            info(f"  Repository: {path}")
-            for remote, commit in sorted(remotes.items()):
-                info(f"   * {remote}: {commit}")
+        # Output the suggestion in a proper format to allow copy & paste
+        if self._freeze_mode(file, mode):
+            info("Freeze repositories:")
+            with open(file, "w+") as fp:
+                fp.write(yaml.dump({"repos": commits}))
 
     def freeze(self, args):
         """ Freeze the python packages in the versions.txt """
@@ -858,7 +877,7 @@ class Environment:
             sys.argv = [""]
 
         shell = Shell()
-        sys.exit(shell.run(["-c", os.path.abspath("etc/odoo.cfg"), "--no-http"]))
+        sys.exit(shell.run(["-c", ODOO_CONFIG, "--no-http"]))
 
     def start(self, args):
         """ Start Odoo without wrapper """
@@ -866,7 +885,7 @@ class Environment:
         if not path:
             return
 
-        cmd = sys.executable, "odoo-bin", "-c", os.path.abspath("etc/odoo.cfg")
+        cmd = sys.executable, "odoo-bin", "-c", ODOO_CONFIG
         sys.exit(call(*cmd, *args, cwd=path))
 
     def ci(self, ci, args):
@@ -907,8 +926,7 @@ class Environment:
 
         # Load the odoo configuration
         with odoo.api.Environment.manage():
-            cfg = os.path.abspath("etc/odoo.cfg")
-            config.parse_config(["-c", cfg])
+            config.parse_config(["-c", ODOO_CONFIG])
             odoo.cli.server.report_configuration()
             # Pass the arguments to pytest
             sys.argv = sys.argv[:1] + args
@@ -976,8 +994,7 @@ class Environment:
         from odoo.tools import config
 
         # Load the Odoo configuration
-        cfg = os.path.abspath("etc/odoo.cfg")
-        config.parse_config(["-c", cfg])
+        config.parse_config(["-c", ODOO_CONFIG])
         odoo.cli.server.report_configuration()
 
         db_name = config["db_name"]
