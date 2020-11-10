@@ -50,7 +50,10 @@ Available commands
   - Use `docker-compose up` instead to expose the ports
 
 * `odoo defuse [options]`
-  - Defuse/anonymize the database
+  - Defuse the database
+
+  `odoo anonymize [options]`
+  - Anonymize the database
 
 * `psql`, `pg_dump`, `pg_restore`, `pg_activity`, `createdb`, `dropdb`
   - Postgres utitilies

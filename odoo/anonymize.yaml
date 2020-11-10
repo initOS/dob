@@ -6,122 +6,109 @@ odoo:
         name:
           length: 20
         ref:
-          lower: 0
-          upper: 2000
+          length: 10
         display_name:
           length: 20
         city:
-          field: name # what happens here?
+          length: 10
         street:
           length: 40
         street2:
           length: 40
-        zip:
-          lower: 0
-          upper: 99000
-        phone:
-          lower: 0
-          upper: 1000000
-        mobile:
-          lower: 0
-          upper: 1000000
+        zip: &number_string "12345"
+        phone: *number_string
+        mobile: *number_string
         email: False
 
     anonymize_account_invoice:
       model: account.invoice
       values:
         amount_untaxed:
-          lower: 0
-          upper: 20000
+          lower: &numbers_lower_bound 0
+          upper: &numbers_upper_bound 1000
         amount_tax:
-          lower: 0
-          upper: 20000
+          lower: *numbers_lower_bound
+          upper: *numbers_upper_bound
         amount_total:
-          lower: 0
-          upper: 20000
+          lower: *numbers_lower_bound
+          upper: *numbers_upper_bound
         residual:
-          lower: 0
-          upper: 20000
+          lower: *numbers_lower_bound
+          upper: *numbers_upper_bound
 
     anonymize_account_invoice_line:
       model: account.invoice.line
       values:
         price_unit:
-          lower: 0
-          upper: 20000
+          lower: *numbers_lower_bound
+          upper: *numbers_upper_bound
         price_subtotal:
-          lower: 0
-          upper: 20000
+          lower: *numbers_lower_bound
+          upper: *numbers_upper_bound
 
     anonymize_account_invoice_tax:
       model: account.invoice.tax
       values:
         amount:
-          lower: 0
-          upper: 20000
+          lower: *numbers_lower_bound
+          upper: *numbers_upper_bound
 
     anonymize_account_move_line:
       model: account.move.line
       values:
-        debit:
-          lower: 0
-          upper: 20000
-        credit:
-          lower: 0
-          upper: 20000
-        amount_currency:
-          lower: 0
-          upper: 20000
+        debit: 0
+        credit: 0
+        amount_currency: 0
 
     anonymize_acount_analytic_line:
       model: account.analytic.line
       values:
         amount:
-          lower: 0
-          upper: 20000
+          lower: *numbers_lower_bound
+          upper: *numbers_upper_bound
 
     anonymize_sale_order:
       model: sale.order
       values:
         amount_tax:
-          lower: 0
-          upper: 20000
+          lower: *numbers_lower_bound
+          upper: *numbers_upper_bound
         amount_total:
-          lower: 0
-          upper: 20000
+          lower: *numbers_lower_bound
+          upper: *numbers_upper_bound
         amount_untaxed:
-          lower: 0
-          upper: 20000
+          lower: *numbers_lower_bound
+          upper: *numbers_upper_bound
 
     anonymize_sale_order_line:
       model: sale.order.line
       values:
         price_unit:
-          lower: 0
-          upper: 20000
+          lower: *numbers_lower_bound
+          upper: *numbers_upper_bound
         discount:
-          lower: 0
-          upper: 20000
+          lower: *numbers_lower_bound
+          upper: *numbers_upper_bound
 
     anonymize_purchase_order:
       model: purchase.order
       values:
         amount_total:
-          lower: 0
-          upper: 20000
+          lower: *numbers_lower_bound
+          upper: *numbers_upper_bound
         amount_tax:
-          lower: 0
-          upper: 20000
+          lower: *numbers_lower_bound
+          upper: *numbers_upper_bound
         amount_untaxed:
-          lower: 0
-          upper: 20000
+          lower: *numbers_lower_bound
+          upper: *numbers_upper_bound
 
     anonymize_purchase_order_line:
       model: purchase.order.line
       values:
         price_unit:
-          lower: 0
-          upper: 20000
+          lower: *numbers_lower_bound
+          upper: *numbers_upper_bound
 
     anonymize_product_template:
       model: product.template

@@ -76,11 +76,11 @@ def load_arguments(args):
         "command", metavar="command", nargs="?",
         help="Command to use. Possible choices: "
              "c(onfig), i(nit), r(un), s(hell), t(est), u(pdate), f(reeze), "
-             "flake8, pylint, eslint, defuse",
+             "flake8, pylint, eslint, defuse, anonymize",
         choices=(
             "c", "config", "i", "init", "s", "shell", "t", "test",
             "u", "update", "r", "run", "f", "freeze", "flake8", "pylint",
-            "eslint", "defuse",
+            "eslint", "defuse", "anonymize",
         ),
     )
     base.add_argument(
@@ -699,15 +699,7 @@ class Environment:
                     vals[name] = defuser.defuse(rec, name, **defuse_opt)
                 rec.write(vals)
 
-    def defuse(self):
-        """ Defuses the database """
-        if not self._init_odoo():
-            return
-
-        defuses = self.get("odoo", "defuse", default={})
-        if not defuses:
-            return
-
+    def change_values(self, dataset, option):
         # pylint: disable=C0415,E0401
         import odoo
         from odoo.tools import config
@@ -719,30 +711,60 @@ class Environment:
 
         db_name = config["db_name"]
 
-        info("Running defuse")
+        if option == "defuse":
+            info("Running defuse")
+        else:
+            info("Running anonymzize")
         with odoo.api.Environment.manage():
             with self.env(db_name) as env:
-                for name, defuse in defuses.items():
-                    info(f"Defuse {name}")
+                for name, item in dataset.items():
+                    if option == "defuse":
+                        info(f"Defuse {name}")
+                    else:
+                        info(f"Anonymize {name}")
 
-                    model = defuse.get("model")
+                    model = item.get("model")
                     if not isinstance(model, str):
                         error("Model must be string")
                         continue
 
-                    domain = defuse.get("domain", [])
+                    domain = item.get("domain", [])
                     if not isinstance(domain, list):
                         error("Domain must be list")
                         continue
 
-                    action = defuse.get("action", "update")
+                    action = item.get("action", "update")
                     if action == "update":
-                        values = defuse.get("values", {})
+                        values = item.get("values", {})
                         self._defuse_update(env, model, domain, values)
                     elif action == "delete":
                         self._defuse_delete(env, model, domain)
                     else:
                         error(f"Undefined action {action}")
+
+    def defuse(self):
+        """ Defuses the database """
+        if not self._init_odoo():
+            return
+
+        defuses = self.get("odoo", "defuse", default={})
+        if not defuses:
+            return
+
+        action = "defuse"
+        return self.change_values(defuses, action)
+
+    def anonymize(self):
+        """Anonymizes the database"""
+        if not self._init_odoo():
+            return
+
+        anonymizes = self.get("odoo", "anonymize", default={})
+        if not anonymizes:
+            return
+
+        action = "anonymize"
+        return self.change_values(anonymizes, action)
 
     def freeze(self):
         """ Freeze the python packages in the versions.txt """
@@ -989,6 +1011,8 @@ if __name__ == "__main__":
         env.start(left)
     elif args.command in ("defuse",):
         env.defuse()
+    elif args.command in ("anonymize"):
+        env.anonymize()
     elif show_help:
         load_arguments(["--help"])
     else:
