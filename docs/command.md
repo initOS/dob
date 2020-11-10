@@ -10,7 +10,8 @@ Available commands
   - Checking out of the repositories
 
 * `odoo freeze`
-  - Freeze the python packages into the versions.txt
+  - Freeze the python packages into the `versions.txt`
+  - Freeze repository commits into the the `odoo.version.yaml`
 
 * `odoo config`
   - Compile the configuration and show the merged result
