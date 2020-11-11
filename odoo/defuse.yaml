@@ -1,4 +1,4 @@
-
+# Definition of action for anonymizing of databases
 odoo:
   defuse:
     defuse_ir_cron:
@@ -57,7 +57,7 @@ odoo:
       domain:
         - ["key", "=", "sendy_list"]
       values:
-       value: ""
+        value: ""
 
     defuse_enterprise_contract:
       action: delete

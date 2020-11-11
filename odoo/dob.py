@@ -207,10 +207,10 @@ def error(msg, *args):
     print(f"\x1b[31m{msg % args}\x1b[0m")
 
 
-class Defuser:
-    """ Defuser class """
+class Action:
+    """ Action handler class """
 
-    def defuse(self, rec, name, **kw):
+    def apply(self, rec, name, **kw):
         field = kw.get("field")
         if field:
             return rec[field]
@@ -663,13 +663,13 @@ class Environment:
         with open('etc/odoo.cfg', 'w+') as fp:
             cp.write(fp)
 
-    def _defuse_delete(self, env, model, domain):
+    def _action_delete(self, env, model, domain):
         """ Runs the delete defusing """
         if model in env:
             env[model].with_context(active_test=False).search(domain).unlink()
 
-    def _defuse_update(self, env, model, domain, values):
-        """ Runs the update defusing """
+    def _action_update(self, env, model, domain, values):
+        """ Runs the update defusing or anonymizing """
         if not values or model not in env:
             return
 
@@ -677,14 +677,14 @@ class Environment:
 
         # Split the values in constant and dynamic
         const, dynamic = {}, {}
-        for name, defuse_opt in values.items():
+        for name, apply_act in values.items():
             if name not in records._fields:
                 continue
 
-            if isinstance(defuse_opt, dict):
-                dynamic[name] = defuse_opt
+            if isinstance(apply_act, dict):
+                dynamic[name] = apply_act
             else:
-                const[name] = defuse_opt
+                const[name] = apply_act
 
         # Handle the constant values
         if const:
@@ -692,14 +692,21 @@ class Environment:
 
         # Handle the dynamic values
         if dynamic:
-            defuser = Defuser()
+            action_executor = Action()
             for rec in records:
                 vals = {}
-                for name, defuse_opt in dynamic.items():
-                    vals[name] = defuser.defuse(rec, name, **defuse_opt)
+                for name, apply_act in dynamic.items():
+                    vals[name] = action_executor.apply(rec, name, **apply_act)
                 rec.write(vals)
 
-    def change_values(self, dataset, option):
+    def _apply_action(self, action):
+        if not self._init_odoo():
+            return
+
+        data = self.get("odoo", action, default={})
+        if not data:
+            return
+
         # pylint: disable=C0415,E0401
         import odoo
         from odoo.tools import config
@@ -711,18 +718,11 @@ class Environment:
 
         db_name = config["db_name"]
 
-        if option == "defuse":
-            info("Running defuse")
-        else:
-            info("Running anonymzize")
+        info(f"Running {action}")
         with odoo.api.Environment.manage():
             with self.env(db_name) as env:
-                for name, item in dataset.items():
-                    if option == "defuse":
-                        info(f"Defuse {name}")
-                    else:
-                        info(f"Anonymize {name}")
-
+                for name, item in data.items():
+                    info(f"{action.capitalize()} {name}")
                     model = item.get("model")
                     if not isinstance(model, str):
                         error("Model must be string")
@@ -733,38 +733,22 @@ class Environment:
                         error("Domain must be list")
                         continue
 
-                    action = item.get("action", "update")
-                    if action == "update":
+                    act = item.get("action", "update")
+                    if act == "update":
                         values = item.get("values", {})
-                        self._defuse_update(env, model, domain, values)
-                    elif action == "delete":
-                        self._defuse_delete(env, model, domain)
+                        self._action_update(env, model, domain, values)
+                    elif act == "delete":
+                        self._action_delete(env, model, domain)
                     else:
-                        error(f"Undefined action {action}")
+                        error(f"Undefined action {act}")
 
     def defuse(self):
         """ Defuses the database """
-        if not self._init_odoo():
-            return
-
-        defuses = self.get("odoo", "defuse", default={})
-        if not defuses:
-            return
-
-        action = "defuse"
-        return self.change_values(defuses, action)
+        return self._apply_action("defuse")
 
     def anonymize(self):
         """Anonymizes the database"""
-        if not self._init_odoo():
-            return
-
-        anonymizes = self.get("odoo", "anonymize", default={})
-        if not anonymizes:
-            return
-
-        action = "anonymize"
-        return self.change_values(anonymizes, action)
+        return self._apply_action("anonymize")
 
     def freeze(self):
         """ Freeze the python packages in the versions.txt """
@@ -1011,7 +995,7 @@ if __name__ == "__main__":
         env.start(left)
     elif args.command in ("defuse",):
         env.defuse()
-    elif args.command in ("anonymize"):
+    elif args.command in ("anonymize",):
         env.anonymize()
     elif show_help:
         load_arguments(["--help"])
