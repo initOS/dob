@@ -700,6 +700,7 @@ class Environment:
                 rec.write(vals)
 
     def _apply_action(self, action):
+        """ Apply in the configuration defined actions on the database """
         if not self._init_odoo():
             return
 
@@ -747,7 +748,7 @@ class Environment:
         return self._apply_action("defuse")
 
     def anonymize(self):
-        """Anonymizes the database"""
+        """ Anonymizes the database """
         return self._apply_action("anonymize")
 
     def freeze(self):
