@@ -3,6 +3,8 @@ bootstrap:
   extend:
     - odoo.default.yaml
     - odoo.yaml
+    - defuse.yaml
+    - anonymize.yaml
   # Version used for the update scripts
   version: "0.1"
 

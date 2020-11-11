@@ -76,11 +76,11 @@ def load_arguments(args):
         "command", metavar="command", nargs="?",
         help="Command to use. Possible choices: "
              "c(onfig), i(nit), r(un), s(hell), t(est), u(pdate), f(reeze), "
-             "flake8, pylint, eslint, defuse",
+             "flake8, pylint, eslint, defuse, anonymize",
         choices=(
             "c", "config", "i", "init", "s", "shell", "t", "test",
             "u", "update", "r", "run", "f", "freeze", "flake8", "pylint",
-            "eslint", "defuse",
+            "eslint", "defuse", "anonymize",
         ),
     )
     base.add_argument(
@@ -207,10 +207,10 @@ def error(msg, *args):
     print(f"\x1b[31m{msg % args}\x1b[0m")
 
 
-class Defuser:
-    """ Defuser class """
+class Action:
+    """ Action handler class """
 
-    def defuse(self, rec, name, **kw):
+    def apply(self, rec, name, **kw):
         field = kw.get("field")
         if field:
             return rec[field]
@@ -663,13 +663,13 @@ class Environment:
         with open('etc/odoo.cfg', 'w+') as fp:
             cp.write(fp)
 
-    def _defuse_delete(self, env, model, domain):
+    def _action_delete(self, env, model, domain):
         """ Runs the delete defusing """
         if model in env:
             env[model].with_context(active_test=False).search(domain).unlink()
 
-    def _defuse_update(self, env, model, domain, values):
-        """ Runs the update defusing """
+    def _action_update(self, env, model, domain, values):
+        """ Runs the update defusing or anonymizing """
         if not values or model not in env:
             return
 
@@ -677,14 +677,14 @@ class Environment:
 
         # Split the values in constant and dynamic
         const, dynamic = {}, {}
-        for name, defuse_opt in values.items():
+        for name, apply_act in values.items():
             if name not in records._fields:
                 continue
 
-            if isinstance(defuse_opt, dict):
-                dynamic[name] = defuse_opt
+            if isinstance(apply_act, dict):
+                dynamic[name] = apply_act
             else:
-                const[name] = defuse_opt
+                const[name] = apply_act
 
         # Handle the constant values
         if const:
@@ -692,20 +692,20 @@ class Environment:
 
         # Handle the dynamic values
         if dynamic:
-            defuser = Defuser()
+            action_executor = Action()
             for rec in records:
                 vals = {}
-                for name, defuse_opt in dynamic.items():
-                    vals[name] = defuser.defuse(rec, name, **defuse_opt)
+                for name, apply_act in dynamic.items():
+                    vals[name] = action_executor.apply(rec, name, **apply_act)
                 rec.write(vals)
 
-    def defuse(self):
-        """ Defuses the database """
+    def _apply_action(self, action):
+        """ Apply in the configuration defined actions on the database """
         if not self._init_odoo():
             return
 
-        defuses = self.get("odoo", "defuse", default={})
-        if not defuses:
+        data = self.get("odoo", action, default={})
+        if not data:
             return
 
         # pylint: disable=C0415,E0401
@@ -719,30 +719,37 @@ class Environment:
 
         db_name = config["db_name"]
 
-        info("Running defuse")
+        info(f"Running {action}")
         with odoo.api.Environment.manage():
             with self.env(db_name) as env:
-                for name, defuse in defuses.items():
-                    info(f"Defuse {name}")
-
-                    model = defuse.get("model")
+                for name, item in data.items():
+                    info(f"{action.capitalize()} {name}")
+                    model = item.get("model")
                     if not isinstance(model, str):
                         error("Model must be string")
                         continue
 
-                    domain = defuse.get("domain", [])
+                    domain = item.get("domain", [])
                     if not isinstance(domain, list):
                         error("Domain must be list")
                         continue
 
-                    action = defuse.get("action", "update")
-                    if action == "update":
-                        values = defuse.get("values", {})
-                        self._defuse_update(env, model, domain, values)
-                    elif action == "delete":
-                        self._defuse_delete(env, model, domain)
+                    act = item.get("action", "update")
+                    if act == "update":
+                        values = item.get("values", {})
+                        self._action_update(env, model, domain, values)
+                    elif act == "delete":
+                        self._action_delete(env, model, domain)
                     else:
-                        error(f"Undefined action {action}")
+                        error(f"Undefined action {act}")
+
+    def defuse(self):
+        """ Defuses the database """
+        return self._apply_action("defuse")
+
+    def anonymize(self):
+        """ Anonymizes the database """
+        return self._apply_action("anonymize")
 
     def freeze(self):
         """ Freeze the python packages in the versions.txt """
@@ -989,6 +996,8 @@ if __name__ == "__main__":
         env.start(left)
     elif args.command in ("defuse",):
         env.defuse()
+    elif args.command in ("anonymize",):
+        env.anonymize()
     elif show_help:
         load_arguments(["--help"])
     else:
