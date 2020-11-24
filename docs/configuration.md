@@ -54,6 +54,10 @@ odoo -> dict
   - Basic odoo configuration
 odoo:addons_path -> list
   - List of additional directories with odoo modules
+odoo:anonymize -> dict
+  - DB actions defined which need to run to anonymize the project (see below)
+odoo:defuse -> dict
+  - DB actions defined which need to run to defuse the project (see below)
 odoo:options -> dict
   - Odoo configuration options which are getting compiled to etc/odoo.cfg
   - Can replace the configuration key with the ODOO_key (upper case) environment
@@ -68,6 +72,38 @@ odoo:version -> str
 repos -> dict
   - Configuration of the repositories to load
   - Check git-aggregator for more
+```
+
+Database actions
+----------------
+
+Actions can be defined to alter the database to be able to defuse or anonymize
+the database. Actions are defined using a name and a dictionary.
+
+```
+<action_name>:
+  action: .. Action type. Either update or delete with update as default.
+  model: .. Odoo model. Required.
+  domain: .. Search domain to specify specific records. Default is []
+  values: .. Dictionary to define the new value of each field. Required.
+```
+
+Values can be defined in multiple ways: directly or as a dictionary. Depending
+on the field type the dictionary option offers parameter for the manipulation of
+the field.
+
+```
+<field>:
+  field: .. A field name to copy the value from.
+  lower: .. The lower bounds for randomized values.*
+  upper: .. The upper bounds for randomized values.*
+  prefix: .. Prefix to add for the new value.**
+  suffix: .. Suffix to add for the new value.**
+  length: .. The length of the randomized value.**
+  uuid: .. Generate a new uuid. Supported options are 1 or 4.**
+
+*  Only available for Integer, Float, Date, Datetime
+** Only available for Char, Html, Text
 ```
 
 Migration
