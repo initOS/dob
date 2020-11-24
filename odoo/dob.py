@@ -228,7 +228,7 @@ class Action:
             return self._datetime(rec, name, **kw)
         if field_type in ("char", "html", "text"):
             return self._text(rec, name, **kw)
-        raise TypeError("Field type is not supported by defuser")
+        raise TypeError("Field type is not supported by action handler")
 
     def _boolean(self, rec, name, **kw):
         field = kw.get("field")
@@ -664,12 +664,12 @@ class Environment:
             cp.write(fp)
 
     def _action_delete(self, env, model, domain):
-        """ Runs the delete defusing """
+        """ Runs the delete action """
         if model in env:
             env[model].with_context(active_test=False).search(domain).unlink()
 
     def _action_update(self, env, model, domain, values):
-        """ Runs the update defusing or anonymizing """
+        """ Runs the update action """
         if not values or model not in env:
             return
 
