@@ -4,6 +4,7 @@ bootstrap:
   coverage: True
   # Pre-defined urls to the repository sources
   github_url: https://github.com/
+  github_ssh: "git@github.com:"
   gitlab_url: "git@git.initos.com:"
 
   # Path to the odoo directory
