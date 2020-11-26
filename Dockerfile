@@ -32,10 +32,11 @@ RUN groupadd -g $GID odoo -o && \
 ADD odoo/npm.txt /srv/odoo/npm.txt
 RUN cat /srv/odoo/npm.txt | xargs npm install --global
 
-ADD odoo/*.txt /srv/odoo/
+ADD odoo/requirements.txt odoo/versions.txt* /srv/odoo/
 RUN if [ -r '/srv/odoo/versions.txt' ]; \
         then python3 -m pip install --no-cache-dir -r /srv/odoo/versions.txt; \
     fi
+
 RUN python3 -m pip install --no-cache-dir -r /srv/odoo/requirements.txt
 
 COPY bin/* /usr/local/bin/
