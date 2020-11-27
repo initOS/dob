@@ -2,7 +2,7 @@ dob (Docker Odoo Bootstrap)
 ===========================
 
 YAML based Odoo deployment tool using Docker. Docker sets up the environment
-Odoo will be built into, installs Debian and Python packages. The further
+Odoo will be built into, installs Debian, NPM, and Python packages. The further
 tooling is done by the `dob.py` script. See the usage. For a documentation of
 the  main YAML structure see the [Further configuration](docs/configuration.md).
 
@@ -37,3 +37,11 @@ Environment variables of `.env`
 -------------------------------
 
 See [Docker Environment](docs/environment.md).
+
+Credits
+-------
+
+This project is inspired by the following projects:
+
+ * [Tecnativa doodba](https://github.com/Tecnativa/doodba)
+ * [camptocamp Odoo Docker](https://github.com/camptocamp/docker-odoo-project)

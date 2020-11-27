@@ -71,7 +71,7 @@ odoo:version -> str
 
 repos -> dict
   - Configuration of the repositories to load
-  - Check git-aggregator for more
+  - Check [git-aggregator](https://github.com/acsone/git-aggregator) for more
 ```
 
 Database actions
