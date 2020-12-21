@@ -200,6 +200,10 @@ def load_update_arguments(args):
         help="Update all modules instead of only changed ones",
     )
     parser.add_argument(
+        "--listed", action="store_true", default=False,
+        help="Update all listed modules instead of only changed ones",
+    )
+    parser.add_argument(
         "--passwords", action="store_true", default=False,
         help="Forcefully overwrite passwords",
     )
@@ -614,12 +618,12 @@ class Environment:
 
         return modules
 
-    def get_uninstalled_modules(self, db_name):
-        """ Return the list of modules which aren't installed """
+    def get_installed_modules(self, db_name):
+        """ Return the list of modules which are installed """
         with self.env(db_name, False) as env:
             domain = [("state", "=", "installed")]
             installed = env["ir.module.module"].search(domain).mapped("name")
-            return self.get_modules().union(["base"]).difference(installed)
+            return set(installed).union(["base"])
 
     def bootstrap(self, args):
         """ Bootstrap the git repositories using git aggregator """
@@ -969,7 +973,23 @@ class Environment:
         import odoo
         from odoo.tools import config
 
+        if not blacklist:
+            blacklist = []
+
         info("Updating all modules")
+        modules = self.get_installed_modules(db_name).difference(blacklist)
+        config["init"] = {}
+        config["update"] = dict.fromkeys(modules, 1)
+        config["overwrite_existing_translations"] = True
+        odoo.modules.registry.Registry.new(db_name, update_module=True)
+
+    def update_listed(self, db_name, blacklist=None):
+        """ Update all modules """
+        # pylint: disable=C0415,E0401
+        import odoo
+        from odoo.tools import config
+
+        info("Updating listed modules")
         modules = self.get_modules().difference(blacklist or [])
         config["init"] = {}
         config["update"] = dict.fromkeys(modules, 1)
@@ -1024,7 +1044,9 @@ class Environment:
             if initialized:
                 uninstalled = self.get_modules()
             else:
-                uninstalled = self.get_uninstalled_modules(db_name)
+                installed = self.get_installed_modules(db_name)
+                modules = self.get_modules()
+                uninstalled = modules.difference(installed)
 
             # Install all modules
             info("Installing all modules")
@@ -1037,6 +1059,8 @@ class Environment:
             # Update all modules which aren't installed before
             if args.modules:
                 self.update_all(db_name, args.modules)
+            elif args.listed:
+                self.update_listed(db_name, uninstalled)
             elif args.all:
                 self.update_all(db_name, uninstalled)
             else:
