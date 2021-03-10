@@ -1,5 +1,5 @@
 # Definition of action for anonymizing of databases
-odoo:
+actions:
   defuse:
     defuse_ir_cron:
       model: ir.cron

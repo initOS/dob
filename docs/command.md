@@ -24,12 +24,24 @@ Available commands
   - Runs only on files specified in `odoo:addons_path`
   - Coverage report can be created if `bootstrap:coverage` is set
 
-* `odoo flake8 [options]`
-  - Start flake8 tests passing the given parameter
+* `odoo black [options]`
+  - Start black tests passing the given parameter
   - Runs only on files specified in `odoo:addons_path`
 
 * `odoo eslint [options]`
   - Start eslint tests passing the given parameter
+  - Runs only on files specified in `odoo:addons_path`
+
+* `odoo flake8 [options]`
+  - Start flake8 tests passing the given parameter
+  - Runs only on files specified in `odoo:addons_path`
+
+* `odoo isort [options]`
+  - Start isort tests passing the given parameter
+  - Runs only on files specified in `odoo:addons_path`
+
+* `odoo prettier [options]`
+  - Start prettier tests passing the given parameter
   - Runs only on files specified in `odoo:addons_path`
 
 * `odoo pylint [options]`
@@ -50,11 +62,8 @@ Available commands
   - Start odoo and pass the options directly to Odoo
   - Use `docker-compose up` instead to expose the ports
 
-* `odoo defuse [options]`
-  - Defuse the database
-
-  `odoo anonymize [options]`
-  - Anonymize the database
+* `odoo action [action] [options]`
+  - Run an action on the database (e.g. anonymize, defuse)
 
 * `psql`, `pg_dump`, `pg_restore`, `pg_activity`, `createdb`, `dropdb`
   - Postgres utitilies

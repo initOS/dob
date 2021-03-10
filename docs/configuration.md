@@ -28,6 +28,9 @@ It's possible to access other parts of the configuration using the `${...}`
 syntax (e.g. `${odoo:version}`). Below are the important sections described.
 
 ```
+actions -> dict
+  - DB actions defined which need to run (see below)
+
 bootstrap -> dict
   - Basic bootstrap configuration
 bootstrap:coverage -> bool
@@ -54,10 +57,6 @@ odoo -> dict
   - Basic odoo configuration
 odoo:addons_path -> list
   - List of additional directories with odoo modules
-odoo:anonymize -> dict
-  - DB actions defined which need to run to anonymize the project (see below)
-odoo:defuse -> dict
-  - DB actions defined which need to run to defuse the project (see below)
 odoo:options -> dict
   - Odoo configuration options which are getting compiled to etc/odoo.cfg
   - Can replace the configuration key with the ODOO_key (upper case) environment
@@ -77,8 +76,9 @@ repos -> dict
 Database actions
 ----------------
 
-Actions can be defined to alter the database to be able to defuse or anonymize
-the database. Actions are defined using a name and a dictionary.
+Actions can be defined to alter the database to be able to run specific things on
+the database. Actions are defined using a name and a dictionary in the `actions`
+section.
 
 ```
 <action_name>:

@@ -1,5 +1,5 @@
 # Definition of action for defusing of databases
-odoo:
+actions:
   anonymize:
     anonymize_res_partner:
       model: res.partner
