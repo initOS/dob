@@ -13,6 +13,7 @@ repos:
           - "prettier@2.1.2"
           - "@prettier/plugin-xml@0.12.0"
         args:
+          - --config odoo/.prettierrc.yml
           - --plugin=@prettier/plugin-xml
 
   - repo: https://github.com/pre-commit/mirrors-eslint
@@ -23,12 +24,16 @@ repos:
         args:
           - --color
           - --fix
+          - --config odoo/.eslintrc.yml
+          - --ignore-path odoo/.eslintignore
 
   - repo: https://gitlab.com/pycqa/flake8
     rev: 3.7.9
     hooks:
       - id: flake8
         additional_dependencies: [flake8-bugbear]
+        args:
+          - --config odoo/.flake8
 
   - repo: https://github.com/PyCQA/isort
     rev: 5.5.1
