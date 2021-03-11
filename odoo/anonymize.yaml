@@ -27,7 +27,7 @@ actions:
       model: account.invoice
       values:
         amount_untaxed: &anon_float
-          lower:  0
+          lower: 0
           upper: 1000
         amount_tax: *anon_float
         amount_total: *anon_float
