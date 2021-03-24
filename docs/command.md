@@ -13,7 +13,7 @@
 - `odoo freeze`
 
   - Freeze the python packages into the `versions.txt`
-  - Freeze repository commits into the the `odoo.version.yaml`
+  - Freeze repository commits into the the `odoo.versions.yaml`
 
 - `odoo config`
 
