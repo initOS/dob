@@ -1,5 +1,5 @@
 # Required for bootstrapping.
-doblib>=0.3
+doblib>=0.5
 
 # Odoo dependencies
 Babel
