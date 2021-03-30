@@ -20,19 +20,34 @@ job_init:
   script: /bin/true
 
 # Run the tests in parallel
-job_test_flake8:
+job_test_black:
   stage: testing
-  script: docker-compose run --rm odoo odoo flake8
-  when: on_success
-
-job_test_pylint:
-  stage: testing
-  script: docker-compose run --rm odoo odoo pylint
+  script: docker-compose run --rm odoo odoo black
   when: on_success
 
 job_test_eslint:
   stage: testing
   script: docker-compose run --rm odoo odoo eslint
+  when: on_success
+
+job_test_flake8:
+  stage: testing
+  script: docker-compose run --rm odoo odoo flake8
+  when: on_success
+
+job_test_isort:
+  stage: testing
+  script: docker-compose run --rm odoo odoo isort
+  when: on_success
+
+job_test_prettier:
+  stage: testing
+  script: docker-compose run --rm odoo odoo prettier
+  when: on_success
+
+job_test_pylint:
+  stage: testing
+  script: docker-compose run --rm odoo odoo pylint
   when: on_success
 
 job_test_unittest:

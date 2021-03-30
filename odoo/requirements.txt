@@ -1,12 +1,5 @@
 # Required for bootstrapping.
-coverage
-flake8
-git-aggregator
-ipython
-pylint_odoo
-pytest
-pytest-cov
-PyYAML
+doblib>=0.5
 
 # Odoo dependencies
 Babel

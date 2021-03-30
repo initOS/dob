@@ -1,5 +1,4 @@
-Minimal configuration
----------------------
+## Minimal configuration
 
 Minimal YAML configuration file `odoo.local.yaml`. This is optional and only
 necessary to overwrite predefined settings locally:
@@ -10,24 +9,26 @@ bootstrap:
   extend: odoo.project.yaml
 ```
 
-Files
------
-* `apt.txt` .. Debian package dependencies
-* `odoo.default.yaml` .. Default settings for the `odoo.cfg`
-* `odoo.local.yaml` .. Machine specific configuration file
-* `odoo.project.yaml` .. Project specific configuration file
-* `odoo.yaml` .. General configuration file
-* `requirements.txt` .. Requirements for the bootstrapping.
-* `versions.txt` .. Python dependencies for odoo. Used for freezing.
+## Files
 
-Configuration
--------------
+- `apt.txt` .. Debian package dependencies
+- `odoo.default.yaml` .. Default settings for the `odoo.cfg`
+- `odoo.local.yaml` .. Machine specific configuration file
+- `odoo.project.yaml` .. Project specific configuration file
+- `odoo.yaml` .. General configuration file
+- `requirements.txt` .. Requirements for the bootstrapping.
+- `versions.txt` .. Python dependencies for odoo. Used for freezing.
+
+## Configuration
 
 The main configuration is stored in .yaml files extended and merged together.
 It's possible to access other parts of the configuration using the `${...}`
 syntax (e.g. `${odoo:version}`). Below are the important sections described.
 
 ```
+actions -> dict
+  - DB actions defined which need to run (see below)
+
 bootstrap -> dict
   - Basic bootstrap configuration
 bootstrap:coverage -> bool
@@ -54,10 +55,6 @@ odoo -> dict
   - Basic odoo configuration
 odoo:addons_path -> list
   - List of additional directories with odoo modules
-odoo:anonymize -> dict
-  - DB actions defined which need to run to anonymize the project (see below)
-odoo:defuse -> dict
-  - DB actions defined which need to run to defuse the project (see below)
 odoo:options -> dict
   - Odoo configuration options which are getting compiled to etc/odoo.cfg
   - Can replace the configuration key with the ODOO_key (upper case) environment
@@ -74,11 +71,11 @@ repos -> dict
   - Check [git-aggregator](https://github.com/acsone/git-aggregator) for more
 ```
 
-Database actions
-----------------
+## Database actions
 
-Actions can be defined to alter the database to be able to defuse or anonymize
-the database. Actions are defined using a name and a dictionary.
+Actions can be defined to alter the database to be able to run specific things on
+the database. Actions are defined using a name and a dictionary in the `actions`
+section.
 
 ```
 <action_name>:
@@ -106,8 +103,7 @@ the field.
 ** Only available for Char, Html, Text
 ```
 
-Migration
----------
+## Migration
 
 Next to the module migrations you can create the `pre_install.py`,
 `pre_update.py` and/or `post_update.py` scripts for full flexibility. These
