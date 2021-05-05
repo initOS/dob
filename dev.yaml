@@ -4,6 +4,9 @@
 version: "3"
 
 services:
+  odoo:
+    ports:
+      - 127.0.0.1:${PUDB_PORT:-6900}:6900
   db:
     networks:
       default:
