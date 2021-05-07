@@ -1,7 +1,7 @@
 ## Minimal configuration
 
-Minimal YAML configuration file `odoo.local.yaml`. This is optional and only
-necessary to overwrite predefined settings locally:
+Minimal YAML configuration file `odoo.local.yaml`. This is optional and only necessary
+to overwrite predefined settings locally:
 
 ```
 # Machine specific configuration file
@@ -21,9 +21,9 @@ bootstrap:
 
 ## Configuration
 
-The main configuration is stored in .yaml files extended and merged together.
-It's possible to access other parts of the configuration using the `${...}`
-syntax (e.g. `${odoo:version}`). Below are the important sections described.
+The main configuration is stored in .yaml files extended and merged together. It's
+possible to access other parts of the configuration using the `${...}` syntax (e.g.
+`${odoo:version}`). Below are the important sections described.
 
 ```
 actions -> dict
@@ -73,21 +73,20 @@ repos -> dict
 
 ## Database actions
 
-Actions can be defined to alter the database to be able to run specific things on
-the database. Actions are defined using a name and a dictionary in the `actions`
-section.
+Actions can be defined to alter the database to be able to run specific things on the
+database. Actions are defined using a name and a dictionary in the `actions` section.
 
 ```
 <action_name>:
-  action: .. Action type. Either update or delete with update as default.
+  action: .. Action type. Either update, insert or delete with update as default.
   model: .. Odoo model. Required.
   domain: .. Search domain to specify specific records. Default is []
   values: .. Dictionary to define the new value of each field. Required.
+  references: .. Dictionary of unique identifiers to XML references of Odoo
 ```
 
-Values can be defined in multiple ways: directly or as a dictionary. Depending
-on the field type the dictionary option offers parameter for the manipulation of
-the field.
+Values can be defined in multiple ways: directly or as a dictionary. Depending on the
+field type the dictionary option offers parameter for the manipulation of the field.
 
 ```
 <field>:
@@ -103,11 +102,15 @@ the field.
 ** Only available for Char, Html, Text
 ```
 
+References are defined as a mapping where is the key is getting used to replace values
+in the `domain` and `values` of the action with the id of the record referenced by the
+xmlid of Odoo.
+
 ## Migration
 
-Next to the module migrations you can create the `pre_install.py`,
-`pre_update.py` and/or `post_update.py` scripts for full flexibility. These
-scripts need the following interface:
+Next to the module migrations you can create the `pre_install.py`, `pre_update.py`
+and/or `post_update.py` scripts for full flexibility. These scripts need the following
+interface:
 
 ```
 def migrate(env, db_version):
