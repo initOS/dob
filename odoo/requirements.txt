@@ -4,6 +4,7 @@ doblib>=0.5
 # Odoo dependencies
 Babel
 chardet
+debugpy
 decorator
 docutils
 feedparser
@@ -41,4 +42,3 @@ Werkzeug==0.16.1
 xlrd
 XlsxWriter
 xlwt
-debugpy

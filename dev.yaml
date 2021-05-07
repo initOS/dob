@@ -6,7 +6,7 @@ version: "3"
 services:
   odoo:
     ports:
-      - 127.0.0.1:${PUDB_PORT:-5678}:5678
+      - 127.0.0.1:${DBBY_PORT:-5678}:5678
   db:
     networks:
       default:
