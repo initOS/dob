@@ -16,9 +16,12 @@ actions:
     defuse_uuid:
       model: ir.config_parameter
       domain:
+        - "|"
         - ["key", "=", "database.uuid"]
+        - ["key", "=", "database.secret"]
       values:
-        uuid: 4
+        value:
+          uuid: 4
 
     defuse_mail_mail:
       model: mail.mail
