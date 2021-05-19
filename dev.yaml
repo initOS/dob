@@ -6,7 +6,7 @@ version: "3"
 services:
   odoo:
     ports:
-      - 127.0.0.1:${DEBUGPY_PORT:-6900}:6900
+      - 127.0.0.1:${DEBUGPY_PORT:-5678}:5678
   db:
     networks:
       default:
