@@ -1,13 +1,14 @@
 ## Required Extension
-The `Python` extension needs to be installed before setting up the configuration.
 
+The `Python` extension needs to be installed before setting up the configuration.
 
 ## Configuration
 
-The configuration file to set up debugpy debugger for VS Code is defined in
-a `launch.json` file that's stored in a `.vscode` folder in your workspace.
-Make sure that port 5678 is open.
-Copy these configurations to `.vscode/launch.json` file inside of the workspace:
+The configuration file to set up debugpy debugger for VS Code is defined in the
+`launch.json` file that's stored in the `.vscode` folder in your workspace. Make sure
+that the port is open. Otherwise you can specify the port using the `DEBUGPY_PORT`
+environment variable. Copy these configurations to `.vscode/launch.json` file inside of
+the workspace:
 
 ```
 {
@@ -35,8 +36,8 @@ Copy these configurations to `.vscode/launch.json` file inside of the workspace:
 }
 ```
 
-In order to start and stop the container by hitting F5 the following `.vscode/tasks.json`
-file has to be created inside of the workspace:
+In order to start and stop the container by hitting F5 the following
+`.vscode/tasks.json` file has to be created inside of the workspace:
 
 ```
 {
