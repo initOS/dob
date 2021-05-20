@@ -7,7 +7,7 @@ The `Python` extension needs to be installed before setting up the configuration
 The configuration file to set up debugpy debugger for VS Code is defined in
 a `launch.json` file that's stored in a `.vscode` folder in your workspace.
 Make sure that port 5678 is open.
-Copy these configurations to `launch.json` file.
+Copy these configurations to `.vscode/tasks.json` file inside of the workspace:
 
 ```
 {
