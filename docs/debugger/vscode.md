@@ -23,7 +23,7 @@ Copy these configurations to `.vscode/launch.json` file inside of the workspace:
             "preLaunchTask": "dob start",
             // Stop the container if the debugging ends
             "postDebugTask": "dob stop",
-            //maps the files on the server to the right files on local machine
+            // Maps the files on the server to the right files on local machine
             "pathMappings": [
                 {
                 "localRoot": "${workspaceFolder}",
