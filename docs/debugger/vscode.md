@@ -7,19 +7,6 @@ The `Python` extension needs to be installed before setting up the configuration
 The configuration file to set up debugpy debugger for VS Code is defined in
 a `launch.json` file that's stored in a `.vscode` folder in your workspace.
 Make sure that port 5678 is open.
-The specific settings are described below:
-
-```
-name: Provides the name for the debug configuration that appears in the VS Code dropdown list.
-type: Identifies the type of debugger to use; leave this set to python for Python code.
-request: Specifies the mode in which to start debugging:
-    1. launch: start the debugger on the file specified in program
-    2- attach: attach the debugger to an already running process.
-port: port used by the debugger.
-host: the host that will be used.
-pathMappings: maps the files on the server to the right files on local machine.
-```
-
 Copy these configurations to `launch.json` file.
 
 ```
@@ -32,8 +19,11 @@ Copy these configurations to `launch.json` file.
             "request": "attach",
             "port": 5678,
             "host": "localhost",
+            // Start the container if the debugger is starting
             "preLaunchTask": "dob start",
+            // Stop the container if the debugging ends
             "postDebugTask": "dob stop",
+            //maps the files on the server to the right files on local machine
             "pathMappings": [
                 {
                 "localRoot": "${workspaceFolder}",
@@ -45,9 +35,8 @@ Copy these configurations to `launch.json` file.
 }
 ```
 
-In order to start and stop the container by hitting F5, a `tasks.json` file
-needs to be created in a `.vscode` folder in your workspace.
-Copy these configurations to `tasks.json` file.
+In order to start and stop the container by hitting F5 the following `.vscode/tasks.json`
+file has to be created inside of the workspace:
 
 ```
 {
