@@ -42,6 +42,11 @@ In order to start and stop the container by hitting F5 the following
 ```
 {
     "version": "2.0.0",
+    "options": {
+        "env": {
+            "BOOTSTRAP_DEBUGGER": "debugpy"
+        }
+    },
     "tasks": [
         {
             "label": "dob start",
