@@ -4,6 +4,11 @@
 version: "3"
 
 services:
+  odoo:
+    environment:
+      BOOTSTRAP_DEBUGGER: "${BOOTSTRAP_DEBUGGER:-}"
+    ports:
+      - 127.0.0.1:${DEBUGPY_PORT:-5678}:5678
   db:
     networks:
       default:
