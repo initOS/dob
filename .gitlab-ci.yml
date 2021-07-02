@@ -12,7 +12,7 @@ before_script:
 
 after_script:
   - docker-compose down
-  - git clean -dfx --exclude=odoo/htmlcov
+  - git clean -dffx --exclude=odoo/htmlcov
 
 # Serialize the build of the image
 job_init:
