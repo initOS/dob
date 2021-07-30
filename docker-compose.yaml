@@ -28,7 +28,7 @@ services:
       PGPASSWORD: *dbpass
       PGPORT: *dbport
       PGUSER: *dbuser
-    image: dob
+    image: dob:${DOB_TAG:-latest}
     logging:
       driver: "json-file"
       options:

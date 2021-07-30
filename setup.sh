@@ -21,7 +21,12 @@ UMASK=$(umask)
 DB_PASSWORD=$(cat /dev/urandom | tr -d -c "[:alnum:]" | head -c 25)
 
 ODOO_ADMIN_PASSWD=$(cat /dev/urandom | tr -d -c "[:alnum:]" | head -c 25)
+
+DOB_TAG=$(pwd | sha256sum | head -c 10)
 EOL
+elif [ -z $(grep "DOB_TAG=" ".env") ]; then
+  echo -e "\033[0;32mAdding DOB_TAG to .env\033[0m"
+  printf "\nDOB_TAG=$(pwd | sha256sum | head -c 10)" >> .env
 fi
 
 if [ ! -f "odoo/odoo.local.yaml" ]; then
