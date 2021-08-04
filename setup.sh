@@ -24,6 +24,15 @@ ODOO_ADMIN_PASSWD=$(cat /dev/urandom | tr -d -c "[:alnum:]" | head -c 25)
 EOL
 fi
 
+if [ -z $(grep "DOB_TAG=" ".env") ]; then
+  echo -e "\033[0;32mAdding DOB_TAG to .env\033[0m"
+  if [ -z "$CI_PROJECT_ID" ]; then
+    echo -e "\nDOB_TAG=$(pwd | sha256sum | head -c 10)" >> .env
+  else
+    echo -e "\nDOB_TAG=$CI_PROJECT_ID" >> .env
+  fi
+fi
+
 if [ ! -f "odoo/odoo.local.yaml" ]; then
   echo -e "\033[0;32mGenerating minimal odoo.local.yaml\033[0m"
   cat > odoo/odoo.local.yaml <<EOL
