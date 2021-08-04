@@ -24,9 +24,13 @@ ODOO_ADMIN_PASSWD=$(cat /dev/urandom | tr -d -c "[:alnum:]" | head -c 25)
 EOL
 fi
 
-if [ -z $(grep "DOB_TAG=" ".env") ] && [ -z "$CI_JOB_ID" ]; then
+if [ -z $(grep "DOB_TAG=" ".env") ]; then
   echo -e "\033[0;32mAdding DOB_TAG to .env\033[0m"
-  printf "\nDOB_TAG=$(pwd | sha256sum | head -c 10)" >> .env
+  if [ -z "$CI_PROJECT_ID" ]; then
+    printf "\nDOB_TAG=$(pwd | sha256sum | head -c 10)" >> .env
+  else
+    printf "\nDOB_TAG=$CI_PROJECT_ID" >> .env
+  fi
 fi
 
 if [ ! -f "odoo/odoo.local.yaml" ]; then
