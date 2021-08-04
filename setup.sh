@@ -27,9 +27,9 @@ fi
 if [ -z $(grep "DOB_TAG=" ".env") ]; then
   echo -e "\033[0;32mAdding DOB_TAG to .env\033[0m"
   if [ -z "$CI_PROJECT_ID" ]; then
-    printf "\nDOB_TAG=$(pwd | sha256sum | head -c 10)" >> .env
+    echo -e "\nDOB_TAG=$(pwd | sha256sum | head -c 10)" >> .env
   else
-    printf "\nDOB_TAG=$CI_PROJECT_ID" >> .env
+    echo -e "\nDOB_TAG=$CI_PROJECT_ID" >> .env
   fi
 fi
 
