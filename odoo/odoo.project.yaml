@@ -21,6 +21,7 @@ modules:
   - disable_odoo_online
   # Nice to have if ported to the odoo version
   #- module_auto_update
+  #- module_change_auto_install
   - remove_odoo_enterprise
   # Only load the ribbon module when mode dev/staging is defined
   - web_environment_ribbon: [dev, staging]
