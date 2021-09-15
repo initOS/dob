@@ -31,6 +31,10 @@ actions -> dict
 
 bootstrap -> dict
   - Basic bootstrap configuration
+bootstrap:blacklist -> list
+  - Blacklist files for the CI
+  - Glob patterns can be used
+  - Requires doblib>=0.8
 bootstrap:coverage -> bool
   - Enable/disable the coverage report when running tests
 bootstrap:extend -> str or list
