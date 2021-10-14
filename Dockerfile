@@ -1,6 +1,6 @@
 ARG PYTHON_VERSION
 
-FROM python:${PYTHON_VERSION}-slim
+FROM python:${PYTHON_VERSION}-slim AS base
 
 ADD odoo/apt.txt /srv/odoo/apt.txt
 
@@ -44,3 +44,8 @@ COPY bin/* /usr/local/bin/
 EXPOSE 8069 8072
 
 CMD ["odoo", "run"]
+
+# Copy everything into the image for an automatic deployment
+FROM base AS deploy
+COPY --chown=odoo:odoo odoo/*.yaml /srv/odoo/odoo/
+COPY --chown=odoo:odoo odoo/src /srv/odoo/odoo/src/

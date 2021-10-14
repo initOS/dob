@@ -1,4 +1,4 @@
-version: "3"
+version: "3.5"
 
 services:
   # Odoo
@@ -10,6 +10,7 @@ services:
         PYTHON_VERSION: 3.6
         UID: "${UID:-1000}"
         GID: "${UID:-1000}"
+      target: base
     depends_on:
       - db
     env_file:
