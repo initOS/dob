@@ -47,4 +47,5 @@ CMD ["odoo", "run"]
 
 # Copy everything into the image for an automatic deployment
 FROM base AS deploy
-COPY --chown=odoo:odoo odoo/* /srv/odoo/odoo/
+COPY --chown=odoo:odoo odoo/*.yaml /srv/odoo/odoo/
+COPY --chown=odoo:odoo odoo/src /srv/odoo/odoo/src/
