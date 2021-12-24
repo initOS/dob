@@ -25,6 +25,7 @@ psutil
 psycopg2
 pydot
 pyldap
+pyOpenSSL
 pyparsing
 PyPDF2
 pyserial
