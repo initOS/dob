@@ -33,8 +33,6 @@ odoo:
     logrotate: True
     longpolling_port: 8072
     max_cron_threads: 2
-    osv_memory_age_limit: 1.0
-    osv_memory_count_limit: False
     overwrite_existing_translations: False
     pidfile: False
     proxy_mode: True
