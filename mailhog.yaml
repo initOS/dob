@@ -1,7 +1,7 @@
 # This file is used to setup a mailhog as sink for all mails generated
 # by odoo. This is meant to be used on test or development machines
 
-version: "3"
+version: "3.5"
 
 services:
   # Odoo
