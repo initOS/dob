@@ -87,6 +87,8 @@ database. Actions are defined using a name and a dictionary in the `actions` sec
   domain: .. Search domain to specify specific records. Default is []
   values: .. Dictionary to define the new value of each field. Required.
   references: .. Dictionary of unique identifiers to XML references of Odoo
+  chunk: .. Update or delete is done in chunks of given size. Default is 0 (no chunks).
+  truncate: .. The delete action uses truncate .. cascade on the table instead.
 ```
 
 Values can be defined in multiple ways: directly or as a dictionary. Depending on the
