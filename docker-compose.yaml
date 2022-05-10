@@ -54,7 +54,7 @@ services:
       POSTGRES_DB: *dbname
       POSTGRES_USER: *dbuser
       POSTGRES_PASSWORD: *dbpass
-      CONF_EXTRA: work_mem = 32MB
+    command: --work_mem=32MB
     shm_size: 512mb
     volumes:
       - db:/var/lib/postgresql/data:z
