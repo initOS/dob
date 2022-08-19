@@ -41,6 +41,7 @@ services:
     ports:
       - ${HTTP_PORT:-127.0.0.1:8069}:8069
       - ${HTTP_LONGPOLLING_PORT:-127.0.0.1:8072}:8072
+    tty: true
     user: odoo
     volumes:
       - ./filestore:/srv/odoo/filestore:rw,z
@@ -56,6 +57,7 @@ services:
       POSTGRES_PASSWORD: *dbpass
     command: --work_mem=32MB
     shm_size: 512mb
+    tty: true
     volumes:
       - db:/var/lib/postgresql/data:z
 
