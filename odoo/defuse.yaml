@@ -66,6 +66,8 @@ actions:
       action: delete
       model: ir.config_parameter
       domain:
+        - "|"
+        - ["key", "=", "database.enterprise_code"]
         - ["key", "=like", "database.expiration_%"]
 
     defuse web_base_url:
