@@ -6,3 +6,9 @@ proseWrap: always
 semi: true
 trailingComma: "es5"
 htmlWhitespaceSensitivity: "strict"
+
+overrides:
+  - files:
+      - "*.xml"
+    options:
+      tabWidth: 4
