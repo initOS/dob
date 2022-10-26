@@ -73,6 +73,8 @@ odoo:version -> str
 repos -> dict
   - Configuration of the repositories to load
   - Check [git-aggregator](https://github.com/acsone/git-aggregator) for more
+  - Additional the `modules` entry allows a list of globs to whitelist/blacklist modules
+    - Starting with "!" blacklists a module which won't getting loaded
 ```
 
 ## Database actions
@@ -104,9 +106,11 @@ field type the dictionary option offers parameter for the manipulation of the fi
   suffix: .. Suffix to add for the new value.**
   length: .. The length of the randomized value.**
   uuid: .. Generate a new uuid. Supported options are 1 or 4.**
+  choices: .. List of values to pick a random value***
 
-*  Only available for Integer, Float, Date, Datetime
-** Only available for Char, Html, Text
+*   Only available for Integer, Float, Date, Datetime
+**  Only available for Char, Html, Text
+*** Only available for Char, Html, Text, Selection
 ```
 
 References are defined as a mapping where is the key is getting used to replace values
