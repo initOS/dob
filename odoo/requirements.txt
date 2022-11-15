@@ -7,6 +7,7 @@ chardet
 decorator
 docutils
 feedparser
+freezegun
 gevent
 greenlet
 html2text
