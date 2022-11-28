@@ -28,7 +28,7 @@ repos:
           - --config=odoo/.eslintrc.yml
           - --ignore-path=odoo/.eslintignore
 
-  - repo: https://gitlab.com/pycqa/flake8
+  - repo: https://github.com/PyCQA/flake8
     rev: 3.8.3
     hooks:
       - id: flake8
