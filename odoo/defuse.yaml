@@ -120,6 +120,10 @@ actions:
       values:
         value: "https://iap-sandbox.odoo.com"
 
+    defuse_iap_account:
+      action: delete
+      model: iap.account
+
     defuse_enrich_endpoint_create:
       action: insert
       model: ir.config_parameter
