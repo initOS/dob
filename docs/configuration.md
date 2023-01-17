@@ -86,6 +86,7 @@ database. Actions are defined using a name and a dictionary in the `actions` sec
 <action_name>:
   action: .. Action type. Either update, insert or delete with update as default.
   model: .. Odoo model. Required.
+  enable: .. Enables/disables the step. Default is True
   domain: .. Search domain to specify specific records. Default is []
   values: .. Dictionary to define the new value of each field. Required.
   context .. Dictionary to update the context of the environment for the action.
