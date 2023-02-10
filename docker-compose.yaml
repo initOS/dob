@@ -47,6 +47,11 @@ services:
       - ./filestore:/srv/odoo/filestore:rw,z
       - ./odoo:/srv/odoo/odoo
       - ./ssh:/srv/odoo/.ssh
+    healthcheck:
+      test: ["CMD", "curl", "-sfo", "/dev/null", "http://127.0.0.1:8069"]
+      interval: 15s
+      timeout: 1s
+      retries: 3
 
   # Database
   db:
@@ -60,6 +65,11 @@ services:
     tty: true
     volumes:
       - db:/var/lib/postgresql/data:z
+    healthcheck:
+      test: ["CMD", "pg_isready", "-d", "odoo"]
+      interval: 5s
+      timeout: 1s
+      retries: 3
 
 networks:
   default:
