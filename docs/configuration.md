@@ -109,6 +109,11 @@ field type the dictionary option offers parameter for the manipulation of the fi
   uuid: .. Generate a new uuid. Supported options are 1 or 4.**
   choices: .. List of values to pick a random value***
 
+Additionally for Date or Datetime the specific parts of the value can be
+replaced with a constant integer or a dict with `lower` and `upper` value.
+Following attributes can be used as keys:
+  `year`, `month`, `day`, `hour`, `minute`, `second`
+
 *   Only available for Integer, Float, Date, Datetime
 **  Only available for Char, Html, Text
 *** Only available for Char, Html, Text, Selection
