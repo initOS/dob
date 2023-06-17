@@ -34,7 +34,7 @@ python-dateutil
 pytz
 pyusb
 qrcode
-reportlab
+reportlab[pycairo]
 requests
 suds-jurko
 vatnumber
