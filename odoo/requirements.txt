@@ -7,6 +7,7 @@ chardet
 decorator
 docutils
 feedparser
+freezegun
 gevent
 greenlet
 html2text
@@ -27,13 +28,13 @@ pydot
 pyldap
 pyOpenSSL
 pyparsing
-PyPDF2
+PyPDF2==1.28.4
 pyserial
 python-dateutil
 pytz
 pyusb
 qrcode
-reportlab
+reportlab[pycairo]
 requests
 suds-jurko
 vatnumber
@@ -42,3 +43,4 @@ Werkzeug==0.16.1
 xlrd
 XlsxWriter
 xlwt
+zeep

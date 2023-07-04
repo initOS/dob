@@ -1,6 +1,6 @@
 repos:
   - repo: https://github.com/psf/black
-    rev: 20.8b1
+    rev: 22.3.0
     hooks:
       - id: black
 
@@ -28,8 +28,8 @@ repos:
           - --config=odoo/.eslintrc.yml
           - --ignore-path=odoo/.eslintignore
 
-  - repo: https://gitlab.com/pycqa/flake8
-    rev: 3.8.2
+  - repo: https://github.com/PyCQA/flake8
+    rev: 3.8.3
     hooks:
       - id: flake8
         additional_dependencies: [flake8-bugbear]
@@ -45,7 +45,7 @@ repos:
           - --settings=odoo/
 
   - repo: https://github.com/PyCQA/pylint
-    rev: pylint-2.5.3
+    rev: v2.11.1
     hooks:
       - id: pylint
         name: pylint
@@ -54,4 +54,4 @@ repos:
           - --exit-zero
         verbose: true
         additional_dependencies: &pylint_deps
-          - pylint-odoo==5.0.0
+          - pylint-odoo==6.2.0

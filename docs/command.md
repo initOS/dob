@@ -7,7 +7,7 @@
 
 - `odoo init [options]`
 
-  - Generation of configuration file `etc/odoo.cfg`
+  - Generation of the Odoo configuration file
   - Checking out of the repositories
 
 - `odoo freeze`
@@ -18,6 +18,10 @@
 - `odoo config`
 
   - Compile the configuration and show the merged result
+
+- `odoo generate`
+
+  - Generation of the Odoo configuration file
 
 - `odoo shell [options]`
 
@@ -61,7 +65,7 @@
 
 - `odoo update [options] [modules]`
 
-  - Generation of configuration file `etc/odoo.cfg`
+  - Generation of the Odoo configuration file
   - Initialize the database
   - Run `pre_install.py` script
   - Install all not installed modules

@@ -19,6 +19,7 @@ services:
       public:
     ports:
       - ${MAILHOG_PORT:-127.0.0.1:8025}:8025
+    tty: true
 
 networks:
   default:

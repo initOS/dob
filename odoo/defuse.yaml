@@ -66,9 +66,11 @@ actions:
       action: delete
       model: ir.config_parameter
       domain:
+        - "|"
+        - ["key", "=", "database.enterprise_code"]
         - ["key", "=like", "database.expiration_%"]
 
-    defuse web_base_url:
+    defuse_web_base_url:
       action: delete
       model: ir.config_parameter
       domain:
@@ -108,3 +110,32 @@ actions:
         - ["key", "=like", "google_management_client_%"]
       values:
         value: ""
+
+    defuse_iap:
+      model: ir.config_parameter
+      domain:
+        - "|"
+        - ["key", "=", "enrich.endpoint"]
+        - ["key", "=", "iap.endpoint"]
+      values:
+        value: "https://iap-sandbox.odoo.com"
+
+    defuse_iap_account:
+      action: delete
+      model: iap.account
+
+    defuse_enrich_endpoint_create:
+      action: insert
+      model: ir.config_parameter
+      domain: [["key", "=", "enrich.endpoint"]]
+      values:
+        key: "enrich.endpoint"
+        value: "https://iap-sandbox.odoo.com"
+
+    defuse_iap_endpoint_create:
+      action: insert
+      model: ir.config_parameter
+      domain: [["key", "=", "iap.endpoint"]]
+      values:
+        key: "iap.endpoint"
+        value: "https://iap-sandbox.odoo.com"

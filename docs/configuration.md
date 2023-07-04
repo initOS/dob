@@ -73,6 +73,8 @@ odoo:version -> str
 repos -> dict
   - Configuration of the repositories to load
   - Check [git-aggregator](https://github.com/acsone/git-aggregator) for more
+  - Additional the `modules` entry allows a list of globs to whitelist/blacklist modules
+    - Starting with "!" blacklists a module which won't getting loaded
 ```
 
 ## Database actions
@@ -84,6 +86,7 @@ database. Actions are defined using a name and a dictionary in the `actions` sec
 <action_name>:
   action: .. Action type. Either update, insert or delete with update as default.
   model: .. Odoo model. Required.
+  enable: .. Enables/disables the step. Default is True
   domain: .. Search domain to specify specific records. Default is []
   values: .. Dictionary to define the new value of each field. Required.
   context .. Dictionary to update the context of the environment for the action.
@@ -104,9 +107,16 @@ field type the dictionary option offers parameter for the manipulation of the fi
   suffix: .. Suffix to add for the new value.**
   length: .. The length of the randomized value.**
   uuid: .. Generate a new uuid. Supported options are 1 or 4.**
+  choices: .. List of values to pick a random value***
 
-*  Only available for Integer, Float, Date, Datetime
-** Only available for Char, Html, Text
+Additionally for Date or Datetime the specific parts of the value can be
+replaced with a constant integer or a dict with `lower` and `upper` value.
+Following attributes can be used as keys:
+  `year`, `month`, `day`, `hour`, `minute`, `second`
+
+*   Only available for Integer, Float, Date, Datetime
+**  Only available for Char, Html, Text
+*** Only available for Char, Html, Text, Selection
 ```
 
 References are defined as a mapping where is the key is getting used to replace values
