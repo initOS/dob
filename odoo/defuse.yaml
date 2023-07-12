@@ -76,6 +76,12 @@ actions:
       domain:
         - ["key", "in", ["web.base.url", "web.base.url.freeze", "report.url"]]
 
+    defuse_module_autoupdate:
+      action: delete
+      model: ir.config_parameter
+      domain:
+        - ["key", "=", "module_auto_update.installed_checksums"]
+
     defuse_shipcloud:
       model: ir.config_parameter
       domain:

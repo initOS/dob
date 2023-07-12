@@ -1,7 +1,12 @@
+anon_disable_tracking: &disable_tracking
+  context:
+    tracking_disable: True
+
 # Definition of action for defusing of databases
 actions:
   anonymize:
     anonymize_res_partner:
+      <<: *disable_tracking
       model: res.partner
       values:
         name:
@@ -22,13 +27,41 @@ actions:
         phone: *number_string
         mobile: *number_string
         email: False
+        comment:
+          length: 20
+        company_name:
+          length: 10
+        vat: False
+        website:
+          length: 10
+
+    anonymize_res_company:
+      model: res.company
+      values:
+        invoice_terms:
+          length: 20
+
+    anonymize_account_analytic_account:
+      model: account.analytic.account
+      values:
+        name:
+          field: id
+          prefix: "Analytic Account "
+
+    anonymize_account_analytic_line:
+      model: account.analytic.line
+      values:
+        amount: &anon_float
+          lower: 0
+          upper: 1000
+        name:
+          field: id
+          prefix: "Description "
 
     anonymize_account_invoice:
       model: account.invoice
       values:
-        amount_untaxed: &anon_float
-          lower: 0
-          upper: 1000
+        amount_untaxed: *anon_float
         amount_tax: *anon_float
         amount_total: *anon_float
         residual: *anon_float
@@ -44,30 +77,117 @@ actions:
       values:
         amount: *anon_float
 
-    anonymize_account_move_line:
-      model: account.move.line
+    anonymize_account_move:
+      <<: *disable_tracking
+      model: account.move
       values:
-        debit: 0
-        credit: 0
-        amount_currency: 0
+        ref:
+          length: 5
 
-    anonymize_acount_analytic_line:
-      model: account.analytic.line
+    anonymize_contract:
+      <<: *disable_tracking
+      model: contract.contract
       values:
-        amount: *anon_float
+        name:
+          field: id
+          prefix: "Contract "
+        note: ""
+        code: ""
+        terminate_comment: ""
+
+    anonymize_contract_line:
+      <<: *disable_tracking
+      model: contract.line
+      values:
+        name:
+          prefix: "Product "
+          field: product_id
+          suffix: " - #START# - #END#"
+        discount: 0
+        quantity:
+          lower: 1
+          upper: 10
+        specific_price:
+          lower: 1
+          upper: 100
 
     anonymize_sale_order:
+      <<: *disable_tracking
       model: sale.order
       values:
         amount_tax: *anon_float
         amount_total: *anon_float
         amount_untaxed: *anon_float
+        access_token: False
+        client_order_ref:
+          length: 10
+        note:
+          length: 20
+        origin:
+          length: 10
+        signature: False
+        signed_by:
+          length: 10
 
-    anonymize_sale_order_line:
+    anonymize_sale_order_line_accountable:
       model: sale.order.line
+      domain: [["display_type", "=", False]]
       values:
         price_unit: *anon_float
-        discount: *anon_float
+        discount: 0
+        price_total: *anon_float
+        price_subtotal: *anon_float
+        product_uom_qty: *anon_float
+
+    anonymize_sale_order_line_non_accountable:
+      model: sale.order.line
+      domain: [["display_type", "!=", False]]
+      values:
+        name:
+          length: 20
+
+    anonymize_hr_employee:
+      <<: *disable_tracking
+      model: hr.employee
+      values:
+        barcode:
+          length: 10
+        birthday:
+          lower: 1900-01-01
+          upper: 2022-12-31
+        children: 0
+        country_id: "$germany$"
+        departure_date: False
+        departure_description: False
+        emergency_contact: False
+        emergency_phone: False
+        gender: other
+        identification_id:
+          length: 10
+        marital: single
+        mobile_phone: ""
+        name:
+          field: id
+          prefix: "Employee "
+        passport_id: ""
+        permit_no: ""
+        pin: ""
+        place_of_birth: Cyberspace
+        spouse_birthday: False
+        spouse_complete_name: False
+        study_field: False
+        study_school: False
+        timesheet_cost: 45
+        visa_expire: False
+        visa_no: False
+        work_email:
+          field: id
+          prefix: "employee"
+          suffix: "@company.com"
+        work_permit_expiration_date: False
+        work_phone: False
+      references:
+        "$germany$": "base.de"
 
     anonymize_purchase_order:
       model: purchase.order
@@ -82,12 +202,60 @@ actions:
         price_unit: *anon_float
 
     anonymize_product_template:
+      <<: *disable_tracking
       model: product.template
       values:
         name:
           length: 20
+        list_price: *anon_float
+        standard_price: *anon_float
 
     anonymize_res_users:
       model: res.users
       values:
         signature: False
+
+    anonymize_project_task:
+      <<: *disable_tracking
+      model: project.task
+      values:
+        name:
+          field: id
+          prefix: "Task "
+        description: False
+        email_cc: False
+        email_from: False
+        partner_email: False
+        partner_phone: False
+
+    anonymize_project_project:
+      <<: *disable_tracking
+      model: project.project
+      values:
+        name:
+          field: id
+          prefix: "Project "
+
+    delete_ir_attachment_pdf:
+      action: delete
+      model: ir.attachment
+      domain: [["mimetype", "=", "application/pdf"]]
+
+    delete_attendance:
+      action: delete
+      model: hr.attendance
+
+    delete_mail_mail:
+      action: delete
+      model: mail.mail
+      truncate: 1
+
+    delete_mail_message:
+      action: delete
+      model: mail.message
+      truncate: 1
+
+    delete_mail_tracking:
+      action: delete
+      model: mail.tracking.value
+      truncate: 1
