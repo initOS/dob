@@ -1,0 +1,31 @@
+# This file is used to setup a mail-devel as sink for all mails generated
+# by odoo. This is meant to be used on test or development machines
+
+services:
+  # Odoo
+  odoo:
+    depends_on:
+      - mailsink
+    environment:
+      ODOO_SMTP_SERVER: mailsink
+      ODOO_SMTP_PORT: 4025
+      ODOO_SMTP_USER: &mailuser "test@example.org"
+      ODOO_SMTP_PASSWORD: &mailpass $MAIL_PASSWORD
+
+  mailsink:
+    command: --flagged-seen
+    image: fkantelberg/mail-devel
+    environment:
+      MAIL_USER: *mailuser
+      MAIL_PASSWORD: *mailpass
+    networks:
+      default:
+      public:
+    ports:
+      - ${MAILSINK_PORT:-127.0.0.1:4080}:4080
+    tty: true
+
+networks:
+  default:
+    internal: True
+  public:

@@ -33,6 +33,11 @@ ODOO_ADMIN_PASSWD=$(cat /dev/urandom | tr -d -c "[:alnum:]" | head -c 25)
 EOL
 fi
 
+if [ -z $(grep "MAIL_PASSWORD=" ".env") ]; then
+  echo -e "\033[0;32mAdding MAIL_PASSWORD to .env\033[0m"
+  echo -e "\nMAIL_PASSWORD=$(cat /dev/urandom | tr -d -c "[:alnum:]" | head -c 25)" >> .env
+fi
+
 if [ -z $(grep "DOB_TAG=" ".env") ]; then
   echo -e "\033[0;32mAdding DOB_TAG to .env\033[0m"
   if [ -z "$CI_PROJECT_ID" ]; then
