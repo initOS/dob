@@ -4,6 +4,7 @@ doblib>=0.5
 # Odoo dependencies
 Babel
 chardet
+cryptography
 decorator
 docutils
 feedparser
@@ -31,13 +32,13 @@ pyparsing
 PyPDF2==1.28.4
 pyserial
 python-dateutil
+python-stdnum
 pytz
 pyusb
 qrcode
 reportlab[pycairo]
 requests
-suds-jurko
-vatnumber
+rjsmin
 vobject
 Werkzeug==0.16.1
 xlrd
