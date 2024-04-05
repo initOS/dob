@@ -49,3 +49,13 @@ CMD ["odoo", "run"]
 FROM base AS deploy
 COPY --chown=odoo:odoo odoo/*.yaml /srv/odoo/odoo/
 COPY --chown=odoo:odoo odoo/src /srv/odoo/odoo/src/
+
+USER odoo
+WORKDIR /srv/odoo/odoo
+
+RUN mkdir -p -m 0700 /srv/odoo/.ssh && \
+  ssh-keyscan -H github.com >> /srv/odoo/.ssh/known_hosts && \
+  ssh-keyscan -H git.initos.com >> /srv/odoo/.ssh/known_hosts
+
+# Set up SSH keys and initialize the repositories
+RUN --mount=type=ssh,uid=$UID ls -la /srv/odoo/ && odoo -c odoo.project.yaml init

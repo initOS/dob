@@ -15,7 +15,7 @@ greenlet
 html2text
 Jinja2
 libsass
-lxml
+lxml<5.2.0
 Mako
 MarkupSafe
 mock
