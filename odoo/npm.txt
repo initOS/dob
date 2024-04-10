@@ -1,2 +1,2 @@
-eslint
-prettier
+eslint@8.24.*
+prettier@2.7.*
