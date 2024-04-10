@@ -1,10 +1,9 @@
 # dob (Docker Odoo Bootstrap)
 
 YAML based Odoo deployment tool using Docker. Docker sets up the environment Odoo will
-be built into, installs Debian, NPM, and Python packages. The further tooling is
-done by [dob-lib](https://pypi.org/project/doblib). See the usage. For a
-documentation of the main YAML structure see the
-[Further configuration](docs/configuration.md).
+be built into, installs Debian, NPM, and Python packages. The further tooling is done by
+[dob-lib](https://pypi.org/project/doblib). See the usage. For a documentation of the
+main YAML structure see the [Further configuration](docs/configuration.md).
 
 ## Compatibility
 
