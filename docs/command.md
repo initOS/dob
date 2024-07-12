@@ -9,6 +9,7 @@
 
   - Generation of the Odoo configuration file
   - Checking out of the repositories
+  - Private Repositories require a valid ssh-agent. See below
 
 - `odoo freeze`
 
@@ -87,3 +88,14 @@
   - Postgres utitilies
   - Generating compressed dumps using `pg_dump` needs the `-T` option of
     `docker-compose exec/run`.
+
+### Private Repositories and ssh-agent
+
+If private repositories are used for additional Odoo modules an ssh-agent is required
+during the `init` command. The following code initializes the ssh-agent and add all
+available SSH keys to it:
+
+```
+$ eval $(ssh-agent -s)
+$ ssh-add
+```
