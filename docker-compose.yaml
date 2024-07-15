@@ -27,6 +27,7 @@ services:
       PGPASSWORD: *dbpass
       PGPORT: *dbport
       PGUSER: *dbuser
+      SSH_AUTH_SOCK: /ssh-agent
     image: dob:${DOB_TAG:-latest}
     logging:
       driver: "json-file"
@@ -44,7 +45,9 @@ services:
     volumes:
       - ./filestore:/srv/odoo/filestore:rw,z
       - ./odoo:/srv/odoo/odoo
-      - ./ssh:/srv/odoo/.ssh
+      # Mount the ssh agent and a pre-generated SSH known hosts
+      - ${SSH_AUTH_SOCK:-/dev/null}:/ssh-agent
+      - ./ssh/known_hosts:/srv/odoo/.ssh/known_hosts
     healthcheck:
       test: ["CMD", "curl", "-sfo", "/dev/null", "http://127.0.0.1:8069"]
       interval: 15s

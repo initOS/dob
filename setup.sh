@@ -1,4 +1,10 @@
 #!/usr/bin/env bash
+
+SSH_HOSTS=(
+  git.initos.com
+  github.com
+)
+
 if [ ! -d "filestore" ]; then
   echo -e "\033[0;32mCreating filestore directory\033[0m"
   mkdir filestore
@@ -7,8 +13,11 @@ fi
 if [ ! -d "ssh" ]; then
   echo -e "\033[0;32mCreating ssh directory\033[0m"
   mkdir ssh
-  echo -e "\033[0;32mLinking ssh keys\033[0m"
-  ln -P ~/.ssh/* ssh/
+  echo -e "\033[0;32mGenerating hosts keys\033[0m"
+  rm -f ssh/known_hosts
+  for host in "${SSH_HOSTS[@]}"; do
+    ssh-keyscan "$host" >> ssh/known_hosts
+  done
 fi
 
 if [ ! -f ".env" ]; then
