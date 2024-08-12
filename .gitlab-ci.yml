@@ -8,6 +8,8 @@ stages:
 before_script:
   - bash setup.sh
   - docker-compose build
+  - eval $(ssh-agent -s)
+  - ssh-add
   - docker-compose run --rm odoo odoo init
 
 after_script:
