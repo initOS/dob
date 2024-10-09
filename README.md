@@ -11,17 +11,17 @@ _dob_ only works with Python 3.6 or greater. Python 2.x is and will not be suppo
 
 ## Usage
 
-Use `-f docker-compose.yaml -f mailhog.yaml` after `docker-compose` if a mailsink is
+Use `-f docker-compose.yaml -f mailhog.yaml` after `docker compose` if a mailsink is
 needed.
 
 ```
 # To be able to use the git keys of the current user
 $ ./setup.sh
 # Build, initialization and start up
-$ docker-compose build
-$ docker-compose run --rm odoo odoo init
-$ docker-compose run --rm odoo odoo update
-$ docker-compose up
+$ docker compose build
+$ docker compose run --rm odoo odoo init
+$ docker compose run --rm odoo odoo update
+$ docker compose up
 ```
 
 ## Configuration

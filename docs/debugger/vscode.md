@@ -51,12 +51,12 @@ In order to start and stop the container by hitting F5 the following
         {
             "label": "dob start",
             "type": "shell",
-            "command": "docker-compose -f docker-compose.yaml -f dev.yaml up -d"
+            "command": "docker compose -f docker-compose.yaml -f dev.yaml up -d"
         },
         {
             "label": "dob stop",
             "type": "shell",
-            "command": "docker-compose -f docker-compose.yaml -f dev.yaml stop odoo"
+            "command": "docker compose -f docker-compose.yaml -f dev.yaml stop odoo"
         }
     ]
 }

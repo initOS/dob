@@ -7,13 +7,13 @@ stages:
 
 before_script:
   - bash setup.sh
-  - docker-compose build
+  - docker compose build
   - eval $(ssh-agent -s)
   - ssh-add
-  - docker-compose run --rm odoo odoo init
+  - docker compose run --rm odoo odoo init
 
 after_script:
-  - docker-compose down
+  - docker compose down
   - git clean -dffx --exclude=odoo/htmlcov
 
 # Serialize the build of the image
@@ -24,38 +24,38 @@ job_init:
 # Run the tests in parallel
 job_test_black:
   stage: testing
-  script: docker-compose run --rm odoo odoo black
+  script: docker compose run --rm odoo odoo black
   when: on_success
 
 job_test_eslint:
   stage: testing
-  script: docker-compose run --rm odoo odoo eslint
+  script: docker compose run --rm odoo odoo eslint
   when: on_success
 
 job_test_flake8:
   stage: testing
-  script: docker-compose run --rm odoo odoo flake8
+  script: docker compose run --rm odoo odoo flake8
   when: on_success
 
 job_test_isort:
   stage: testing
-  script: docker-compose run --rm odoo odoo isort
+  script: docker compose run --rm odoo odoo isort
   when: on_success
 
 job_test_prettier:
   stage: testing
-  script: docker-compose run --rm odoo odoo prettier
+  script: docker compose run --rm odoo odoo prettier
   when: on_success
 
 job_test_pylint:
   stage: testing
-  script: docker-compose run --rm odoo odoo pylint
+  script: docker compose run --rm odoo odoo pylint
   when: on_success
 
 job_test_unittest:
   stage: testing
   script:
-    - docker-compose run --rm odoo odoo update
-    - docker-compose run --rm odoo odoo test
+    - docker compose run --rm odoo odoo update
+    - docker compose run --rm odoo odoo test
   coverage: '/TOTAL.+?(\d+\%)/'
   when: on_success
