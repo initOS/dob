@@ -15,7 +15,8 @@ greenlet
 html2text
 Jinja2
 libsass
-lxml<5.2.0
+lxml<5.2.0 ; python_version > '3.10' and python_version < '3.12'
+lxml==5.2.1; python_version >= '3.12'
 Mako
 MarkupSafe
 mock
@@ -30,7 +31,8 @@ pydot
 pyldap
 pyOpenSSL
 pyparsing
-PyPDF2==1.28.4
+PyPDF2==1.26.0 ; python_version <= '3.10'
+PyPDF2==2.12.1 ; python_version > '3.10'
 pyserial
 python-dateutil
 python-stdnum
@@ -41,7 +43,8 @@ reportlab[pycairo]
 requests
 rjsmin
 vobject
-Werkzeug==0.16.1
+Werkzeug==0.16.1 ; python_version <= '3.9'
+Werkzeug==2.0.2 ; python_version > '3.9'
 xlrd
 XlsxWriter
 xlwt
