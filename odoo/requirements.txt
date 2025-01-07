@@ -15,8 +15,9 @@ greenlet
 html2text
 Jinja2
 libsass
-lxml<5.2.0 ; python_version > '3.10' and python_version < '3.12'
+lxml<5.2.0 ; python_version < '3.12'
 lxml==5.2.1; python_version >= '3.12'
+lxml-html-clean
 Mako
 MarkupSafe
 mock
