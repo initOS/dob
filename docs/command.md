@@ -33,6 +33,9 @@
   - Start unittests passing the given parameter
   - Runs only on files specified in `odoo:addons_path`
   - Coverage report can be created if `bootstrap:coverage` is set
+  - runs pytest under the hood and wont' recognize odoos test arguments
+  - pass the filesystem location for the module you want to test as argument (for example /tmp/addons/mymodule)
+  - also check -k argument of pytest
 
 - `odoo black [options]`
 
