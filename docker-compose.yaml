@@ -5,7 +5,7 @@ services:
       context: .
       dockerfile: Dockerfile
       args:
-        PYTHON_VERSION: "3.10"
+        PYTHON_VERSION: "3.12"
         UID: "${UID:-1000}"
         GID: "${UID:-1000}"
       target: base

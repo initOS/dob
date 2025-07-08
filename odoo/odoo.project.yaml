@@ -13,7 +13,7 @@ odoo:
   addons_path:
     - src/addons
 
-  version: "17.0"
+  version: "18.0"
 
 # List of modules to install/update
 modules:
