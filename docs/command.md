@@ -33,6 +33,11 @@
   - Start unittests passing the given parameter
   - Runs only on files specified in `odoo:addons_path`
   - Coverage report can be created if `bootstrap:coverage` is set
+  - Runs pytest under the hood and won't recognize odoos test arguments
+  - Pass the location of the module inside of the container
+    - Modules loaded from a repository are available inside of `/tmp/addons/`
+    - Modules inside of `odoo/src/` are located under `/srv/odoo/odoo/src/`
+  - Also check `-k` argument of pytest to filter specific tests
 
 - `odoo black [options]`
 
