@@ -2,8 +2,6 @@
 doblib>=0.19.8
 
 # Odoo dependencies
-asn1crypto==1.4.0 ; python_version < '3.11'
-asn1crypto==1.5.1 ; python_version >= '3.11'
 Babel
 chardet
 cbor2==5.4.2 ; python_version < '3.12'
@@ -14,11 +12,12 @@ freezegun
 geoip2
 gevent
 greenlet
+idna
 Jinja2
 libsass
+lxml-html-clean ; python_version >= '3.12'
 lxml<5.2.0 ; python_version < '3.12'
 lxml==5.2.1 ; python_version >= '3.12'
-lxml-html-clean ; python_version >= '3.12'
 MarkupSafe
 num2words
 ofxparse

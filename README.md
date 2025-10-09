@@ -45,6 +45,13 @@ There are multiple ways to deploy this project on servers. Beside the manual dep
 using the commands above you can also rely on a more autonomous one. See
 [Deployment](docs/deploy.md) for more information.
 
+## Presets
+
+There are several presets defined in the specific version depending folders under
+`docs/presets/`. These can be copied into the `odoo/` folder to start a new project
+easier. The presets are including the most basic requirements for the Odoo CE server
+to run and don't include every possible package a module might require.
+
 ## Credits
 
 This project is inspired by the following projects:

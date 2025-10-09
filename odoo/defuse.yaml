@@ -74,7 +74,7 @@ actions:
       action: delete
       model: ir.config_parameter
       domain:
-        - ["key", "in", ["web.base.url", "web.base.url.freeze", "report.url"]]
+        - ["key", "in", ["web.base.url.freeze", "report.url"]]
 
     defuse_module_autoupdate:
       action: delete
