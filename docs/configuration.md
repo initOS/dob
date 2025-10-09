@@ -51,6 +51,15 @@ bootstrap:repo -> dict
 bootstrap:version -> str
   - Version of the database used for the migration
 
+bootstrap:ci_path -> list
+  - List of paths to include in the all tests
+bootstrap:prettier:extension -> list
+  - File extensions to use. Defaults to .js and .xml
+bootstrap:pylint:extension -> list
+  - File extensions to use. Defaults to .py, .csv and .xml
+bootstrap:pytest:ignore -> list
+  - List of globs to ignore files in the tests. Equals to --ignore-glob of pytest
+
 modules: -> list
   - List of modules to load with 2 options
   - Using a dictionary only loads modules when in one of the given modes
