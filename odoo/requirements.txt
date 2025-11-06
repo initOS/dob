@@ -1,5 +1,6 @@
 # Required for bootstrapping.
-doblib>=0.19.8
+doblib>=0.20.0
+ruff
 
 # Odoo dependencies
 asn1crypto==1.4.0 ; python_version < '3.11'

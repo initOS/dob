@@ -100,6 +100,7 @@ requests-file==2.1.0
 requests-toolbelt==1.0.0
 rjsmin==1.2.4
 rlPyCairo==0.4.0
+ruff==0.14.3
 setuptools==80.9.0
 six==1.17.0
 soupsieve==2.8

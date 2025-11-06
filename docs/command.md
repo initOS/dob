@@ -43,6 +43,7 @@
 
   - Start black tests passing the given parameter
   - Runs only on files specified in `odoo:addons_path`
+  - Only if `black` is installed
 
 - `odoo eslint [options]`
 
@@ -53,11 +54,25 @@
 
   - Start flake8 tests passing the given parameter
   - Runs only on files specified in `odoo:addons_path`
+  - Only if `flake8` is installed
 
 - `odoo isort [options]`
 
   - Start isort tests passing the given parameter
   - Runs only on files specified in `odoo:addons_path`
+  - Only if `isort` is installed
+
+- `odoo ruff [options]`
+
+  - Start ruff check passing the given parameter
+  - Runs only on files specified in `odoo:addons_path`
+  - Only if `ruff` is installed
+
+- `odoo ruff-format [options]`
+
+  - Start ruff format passing the given parameter
+  - Runs only on files specified in `odoo:addons_path`
+  - Only if `ruff` is installed
 
 - `odoo prettier [options]`
 

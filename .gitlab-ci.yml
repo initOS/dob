@@ -22,24 +22,19 @@ job_init:
   script: /bin/true
 
 # Run the tests in parallel
-job_test_black:
-  stage: testing
-  script: docker compose run --rm odoo odoo black
-  when: on_success
-
 job_test_eslint:
   stage: testing
   script: docker compose run --rm odoo odoo eslint
   when: on_success
 
-job_test_flake8:
+job_test_ruff_check:
   stage: testing
-  script: docker compose run --rm odoo odoo flake8
+  script: docker compose run --rm odoo odoo ruff
   when: on_success
 
-job_test_isort:
+job_test_ruff_format:
   stage: testing
-  script: docker compose run --rm odoo odoo isort
+  script: docker compose run --rm odoo odoo ruff-format
   when: on_success
 
 job_test_prettier:
