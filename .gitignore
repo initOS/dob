@@ -3,6 +3,7 @@
 .env
 .idea
 .pytest_cache
+.ruff_cache
 .vscode/
 __pycache__
 db/
