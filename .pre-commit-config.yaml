@@ -1,8 +1,11 @@
 repos:
-  - repo: https://github.com/psf/black
-    rev: 24.10.0
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.14.6
     hooks:
-      - id: black
+      - id: ruff
+        args: [--fix, --exit-non-zero-on-fix, --config=odoo/.ruff.toml]
+      - id: ruff-format
+        args: [--config=odoo/.ruff.toml]
 
   - repo: https://github.com/pre-commit/mirrors-prettier
     rev: v2.7.1
@@ -29,21 +32,6 @@ repos:
           - --fix
           - --config=odoo/.eslintrc.yml
           - --ignore-path=odoo/.eslintignore
-
-  - repo: https://github.com/PyCQA/flake8
-    rev: 7.1.1
-    hooks:
-      - id: flake8
-        args:
-          - --config=odoo/.flake8
-
-  - repo: https://github.com/PyCQA/isort
-    rev: 5.13.2
-    hooks:
-      - id: isort
-        name: isort
-        args:
-          - --settings=odoo/
 
   - repo: https://github.com/OCA/pylint-odoo
     rev: v9.1.3
