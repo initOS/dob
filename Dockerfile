@@ -39,6 +39,9 @@ RUN if [ -r '/srv/odoo/versions.txt' ]; \
 
 RUN python3 -m pip install --no-cache-dir -r /srv/odoo/requirements.txt
 
+# Set NODE_PATH so Node.js can find globally installed modules
+ENV NODE_PATH=/usr/local/lib/node_modules
+
 COPY bin/* /usr/local/bin/
 
 EXPOSE 8069 8072
