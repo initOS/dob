@@ -67,7 +67,7 @@ services:
     shm_size: 512mb
     tty: true
     volumes:
-      - db:/var/lib/postgresql/data:z
+      - db:/var/lib/postgresql
     healthcheck:
       test: ["CMD", "pg_isready", "-U", *dbuser, "-d", *dbname]
       interval: 5s
