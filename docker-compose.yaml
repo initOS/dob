@@ -10,7 +10,9 @@ services:
         GID: "${GID:-1000}"
       target: base
     depends_on:
-      - db
+      db:
+        condition: service_healthy
+        restart: true
     env_file:
       - .env
     environment:
