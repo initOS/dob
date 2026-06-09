@@ -7,10 +7,12 @@ services:
       args:
         PYTHON_VERSION: "3.12"
         UID: "${UID:-1000}"
-        GID: "${UID:-1000}"
+        GID: "${GID:-1000}"
       target: base
     depends_on:
-      - db
+      db:
+        condition: service_healthy
+        restart: true
     env_file:
       - .env
     environment:
@@ -65,7 +67,7 @@ services:
     shm_size: 512mb
     tty: true
     volumes:
-      - db:/var/lib/postgresql/data:z
+      - db:/var/lib/postgresql
     healthcheck:
       test: ["CMD", "pg_isready", "-U", *dbuser, "-d", *dbname]
       interval: 5s

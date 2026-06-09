@@ -98,7 +98,7 @@
 - `odoo run [options]`
 
   - Start odoo and pass the options directly to Odoo
-  - Use `docker-compose up` instead to expose the ports
+  - Use `docker compose up` instead to expose the ports
 
 - `odoo action [action] [options]`
 
@@ -107,7 +107,7 @@
 - `psql`, `pg_dump`, `pg_restore`, `pg_activity`, `createdb`, `dropdb`
   - Postgres utitilies
   - Generating compressed dumps using `pg_dump` needs the `-T` option of
-    `docker-compose exec/run`.
+    `docker compose exec/run`.
 
 ### Private Repositories and ssh-agent
 
