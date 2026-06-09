@@ -5,6 +5,10 @@ bootstrap:
     - odoo.yaml
     - defuse.yaml
     - anonymize.yaml
+
+  prettier:
+    config: ".prettier.cjs"
+
   # Version used for the update scripts
   version: "0.1"
 

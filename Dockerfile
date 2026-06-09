@@ -32,6 +32,9 @@ RUN groupadd -g $GID odoo -o && \
 ADD odoo/npm.txt /srv/odoo/npm.txt
 RUN cat /srv/odoo/npm.txt | xargs npm install --global
 
+# Set NODE_PATH so Node.js can find globally installed modules
+ENV NODE_PATH=/usr/local/lib/node_modules
+
 ADD odoo/requirements.txt odoo/versions.txt* /srv/odoo/
 RUN if [ -r '/srv/odoo/versions.txt' ]; \
         then python3 -m pip install --no-cache-dir -r /srv/odoo/versions.txt; \
