@@ -23,15 +23,19 @@ repos:
         files: \.(css|htm|html|js|json|jsx|less|md|scss|toml|ts|xml)$
 
   - repo: https://github.com/pre-commit/mirrors-eslint
-    rev: v8.24.0
+    rev: v9.12.0
     hooks:
       - id: eslint
+        additional_dependencies:
+          - "eslint@9.12.0"
+          - "eslint-plugin-jsdoc@50.3.1"
+          - "globals@16.0.0"
         verbose: true
         args:
           - --color
           - --fix
-          - --config=odoo/.eslintrc.yml
-          - --ignore-path=odoo/.eslintignore
+          - --no-warn-ignored
+          - --config=odoo/eslint.config.cjs
 
   - repo: https://github.com/OCA/pylint-odoo
     rev: v9.1.3
