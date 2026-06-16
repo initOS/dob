@@ -7,11 +7,18 @@ const config = {
     printWidth: 88,
     overrides: [
         {
-            "files": "**/*.xml",
-            "options": {
-                "printWidth": 100
-            }
-        }
+            files: "**/*.xml",
+            options: {
+                printWidth: 100,
+            },
+        },
+        {
+            files: ["*.json", "*.yml", "*.yaml", "*.rst", "*.md"],
+            options: {
+                tabWidth: 2,
+                proseWrap: "preserve",
+            },
+        },
     ],
     tabWidth: 4,
     proseWrap: "always",
