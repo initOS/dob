@@ -1,5 +1,5 @@
-var globals = require('globals');
-jsdoc = require("eslint-plugin-jsdoc");
+const globals = require("globals");
+const jsdoc = require("eslint-plugin-jsdoc");
 
 const config = [{
     // Global ignores for config files
@@ -19,11 +19,12 @@ const config = [{
             $: "readonly",
             fuzzy: "readonly",
             jQuery: "readonly",
+            luxon: "readonly",
             moment: "readonly",
             odoo: "readonly",
             openerp: "readonly",
             owl: "readonly",
-            luxon: "readonly",
+            Promise: "readonly",
             QUnit: "readonly",
             ...globals.browser,
         },
@@ -40,10 +41,10 @@ const config = [{
             ignoreConsecutiveComments: true,
             ignoreInlineComments: true,
         }],
-        complexity: ["warn", 15],
+        "complexity": ["warn", 15],
         "constructor-super": "warn",
         "dot-notation": "warn",
-        eqeqeq: "warn",
+        "eqeqeq": "warn",
         "global-require": "warn",
         "handle-callback-err": "warn",
         "id-blacklist": "warn",
@@ -155,12 +156,14 @@ const config = [{
         "no-with": "warn",
         "operator-assignment": ["error", "always"],
         "prefer-const": "warn",
-        radix: "warn",
+        "radix": "warn",
         "require-yield": "warn",
         "sort-imports": "warn",
         "spaced-comment": ["error", "always"],
-        strict: ["error", "function"],
+        "strict": ["error", "function"],
         "use-isnan": "error",
+        "valid-typeof": "warn",
+        "yoda": "warn",
 
         "jsdoc/check-tag-names": "warn",
         "jsdoc/check-types": "warn",
@@ -168,9 +171,6 @@ const config = [{
         "jsdoc/require-return": "off",
         "jsdoc/require-return-description": "off",
         "jsdoc/require-return-type": "off",
-
-        "valid-typeof": "warn",
-        yoda: "warn",
     },
 
     settings: {
@@ -210,4 +210,4 @@ const config = [{
     },
 }];
 
-module.exports = config
+module.exports = config;

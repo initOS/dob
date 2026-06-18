@@ -7,7 +7,7 @@ bootstrap:
     - anonymize.yaml
 
   prettier:
-    config: ".prettier.cjs"
+    config: "prettier.config.cjs"
 
   # Version used for the update scripts
   version: "0.1"
