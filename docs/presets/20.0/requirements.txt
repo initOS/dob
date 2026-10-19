@@ -1,0 +1,59 @@
+# Required for bootstrapping.
+doblib>=0.21.0
+ruff
+
+# Odoo dependencies
+asn1crypto==1.4.0 ; python_version < '3.11'
+asn1crypto==1.5.1 ; python_version >= '3.11'
+Babel
+chardet
+cbor2==5.4.2 ; python_version < '3.12'
+cbor2==5.6.2 ; python_version >= '3.12'
+cryptography
+docutils
+freezegun
+geoip2
+gevent
+greenlet
+h11
+Jinja2
+libsass
+lxml<5.2.0 ; python_version < '3.12'
+lxml==5.2.1 ; python_version >= '3.12'
+lxml-html-clean ; python_version >= '3.12'
+MarkupSafe
+num2words
+ofxparse
+openpyxl==3.0.9 ; python_version < '3.12'
+openpyxl==3.1.2 ; python_version >= '3.12'
+passlib
+phonenumbers
+Pillow
+polib
+psutil
+psycopg2
+pyOpenSSL
+pyparsing
+PyPDF2==1.26.0 ; python_version <= '3.10'
+PyPDF2==2.12.1 ; python_version > '3.10' and python_version < '3.13'
+PyPDF==5.4.0 ; python_version >= '3.13'
+pyserial
+python-dateutil
+python-ldap
+python-magic
+python-stdnum
+pytz
+qrcode
+reportlab[pycairo]
+requests
+rjsmin
+urllib3
+vobject
+Werkzeug==0.16.1 ; python_version <= '3.9'
+Werkzeug==2.0.2 ; python_version > '3.9' and python_version <= '3.10'
+Werkzeug==2.2.2 ; python_version > '3.10' and python_version < '3.12'
+Werkzeug==3.0.1 ; python_version >= '3.12'
+xlrd
+XlsxWriter
+xlwt
+zeep

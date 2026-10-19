@@ -1,5 +1,5 @@
 # Required for bootstrapping.
-doblib>=0.20.0
+doblib>=0.21.0
 ruff
 
 # Odoo dependencies
@@ -15,6 +15,7 @@ freezegun
 geoip2
 gevent
 greenlet
+h11
 Jinja2
 libsass
 lxml<5.2.0 ; python_version < '3.12'
@@ -34,7 +35,8 @@ psycopg2
 pyOpenSSL
 pyparsing
 PyPDF2==1.26.0 ; python_version <= '3.10'
-PyPDF2==2.12.1 ; python_version > '3.10'
+PyPDF2==2.12.1 ; python_version > '3.10' and python_version < '3.13'
+PyPDF==5.4.0 ; python_version >= '3.13'
 pyserial
 python-dateutil
 python-ldap

@@ -17,7 +17,7 @@ odoo:
   addons_path:
     - src/addons
 
-  version: "19.0"
+  version: "20.0"
 
 # List of modules to install/update
 modules:
