@@ -47,6 +47,13 @@ job_test_pylint:
   script: docker compose run --rm odoo odoo pylint
   when: on_success
 
+job_test_frozen:
+  stage: testing
+  script:
+    # Freeze the current state
+    - docker compose run --rm odoo odoo freeze --mode all
+    - git diff -b --exit-code
+
 job_test_unittest:
   stage: testing
   script:
